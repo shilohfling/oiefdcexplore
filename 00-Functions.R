@@ -1,9 +1,13 @@
 ##FEATURES:
 ##First check the .Renviron for the appropriate API key
 ##Second, it should use a key passed as an argument
+##How can we work on keeping this versatile and calling mutliple columns as a vector?
+
+##Make a list to stuff the functions into 
+WUTIL <- list()
 
 ##Get the sentiment type, score, and ratio for tweets using the twinword API
-WUTILgetSentiment <- function(df, key = NULL) {
+WUTIL$getSentiment <- function(df, key = NULL) {
       df$sentType <- NA
       df$sentScore <- NA
       df$sentRatio <- NA
@@ -32,7 +36,7 @@ WUTILgetSentiment <- function(df, key = NULL) {
             words[[n]] <- content$keywords
       }
       
-      words <- myTwitter$wordListtoDF(words)
+      words <- WUTIL$wordListtoDF(words)
       
       final <- list(df = df, words = words)
       return(final)
