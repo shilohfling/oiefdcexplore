@@ -21,5 +21,11 @@ comment <- data_clean$comment.overall[16:17]
 comment <- strsplit(comment, "\\.|\\?|\\!")
 comment <- lapply(comment, function(x) x <- x[!x == ""])
 
-results <- textaDetectTopics(comment[[2]])
+results <- textaSentiment(comment[[2]])
+
+##Develop a function that compares the twinword sentiment API to the Azure sentiment API
+df <- df$twinword
+df <- df$azure
+df$twinword <- WUTIL$getSentiment(as.data.frame(comment[[2]]))
+df$azure <- textaSentiment(comment[[2]])
 

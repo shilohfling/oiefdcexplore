@@ -26,8 +26,8 @@ WUTIL$getSentiment <- function(df, key = NULL, max = 100) {
       for(a in df$text) {
             n <- n + 1
             
-            headers <- c("Azure" = key)                           
-            url <- parse_url("https://eastus2.api.cognitive.microsoft.com/text/analytics/v2.0")
+            headers <- c("X-Mashape-Key" = key)                           
+            url <- parse_url("https://twinword-sentiment-analysis.p.mashape.com/analyze/")
             url$query <- list("text" = a)                                            
             response <- POST(build_url(url), add_headers(headers),         
                              content_type("application/x-www-form-urlencoded"),   
