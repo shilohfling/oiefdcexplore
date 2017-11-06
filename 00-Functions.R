@@ -17,10 +17,12 @@
 
 stripWhiteSpace <- function(data_clean) {
   n <- 0
-  for (a in data_clean)
+  for (a in data_clean) {
     n <- n + 1
     data_clean$comment.overall[n] <- strsplit(comment, "\\.|\\?|\\!")
     data_clean$comment.overall[n] <- lapply(comment, function(x) x <- x[!x == ""])
+  }
+  return(data_clean$comment.overall)
 }
 
 ##Get the sentiment type, score, and ratio for tweets using the twinword API
@@ -64,7 +66,9 @@ getAzureSentiment <- function(data_clean, n = 10) {
     for(a in data_clean$comment.overall) {
       n <- n + 1
         ##CALL AZURE API
+        ##SKIP N/A VALUES
         ##GET COMMENT
+        ##SET MINIMUM THRESHOLD FOR CHARACTER LENGTH
         ##CALL STRINGSPLIT FUNCTION
         stripWhiteSpace()
         ##RUN AZURE API CALCULATIONS
