@@ -1,5 +1,7 @@
+##Load packages
 library(openxlsx)
 library(mscstexta4r)
+library(httr)
 
 ##Call the API by logging in with the URL and Key
 ##Values passed here from file .mscskeys.json
@@ -26,6 +28,6 @@ results <- textaSentiment(comment[[2]])
 ##Develop a function that compares the twinword sentiment API to the Azure sentiment API
 df <- df$twinword
 df <- df$azure
-df$twinword <- WUTIL$getSentiment(as.data.frame(comment[[2]]))
+df$twinword <- getSentiment(as.data.frame(comment[[2]]))
 df$azure <- textaSentiment(comment[[2]])
 
