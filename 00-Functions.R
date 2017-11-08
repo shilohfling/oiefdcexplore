@@ -4,60 +4,62 @@
 ##How can we work on keeping this versatile and calling mutliple columns as a vector?
 
 
-##Not sure how this function is applicable for this project
-##Came from our twitter sentiment project
-# WUTIL$wordListtoDF <- function(list) {
-#   words <- unlist(lapply(list, function(x) lapply(x, "[[", "word")))
-#   score <- unlist(lapply(list, function(x) lapply(x, "[[", "score")))
-#   data_clean <- data.frame(words = words, score = score)
-#   
-#   return(df)
+# stripWhiteSpace <- function(data_clean) {
+#   n <- 0
+#   for (a in data_clean) {
+#     n <- n + 1
+#     data_clean$comment.overall[n] <- strsplit(comment, "\\.|\\?|\\!")
+#     data_clean$comment.overall[n] <- lapply(comment, function(x) x <- x[!x == ""])
+#   }
+#   return(data_clean$comment.overall)
 # }
 
-
-stripWhiteSpace <- function(data_clean) {
-  n <- 0
-  for (a in data_clean) {
-    n <- n + 1
-    data_clean$comment.overall[n] <- strsplit(comment, "\\.|\\?|\\!")
-    data_clean$comment.overall[n] <- lapply(comment, function(x) x <- x[!x == ""])
-  }
-  return(data_clean$comment.overall)
+##TwinWord API call
+callTW <- function(char, key) {
+      headers <- c("X-Mashape-Key" = key)                           
+      url <- parse_url("https://twinword-sentiment-analysis.p.mashape.com/analyze/")
+      url$query <- list("text" = char)                                            
+      response <- POST(build_url(url), add_headers(headers),         
+                       content_type("application/x-www-form-urlencoded"),   
+                       accept_json())
+      content <- content(response, "parsed")
+      return(content)
 }
+
 
 ##Get the sentiment type, score, and ratio for tweets using the twinword API
-getTwinwordSentiment <- function(data_clean, key = NULL, n = 100) {
-    data_clean$sentType[n] <- NA      ##MIN,MAX,MEAN not availble with twinword sentiment API
-    data_clean$sentScore[n] <- NA     ##Twinword Sentiment calculates sent Score and Ratio
-    data_clean$sentRatio[n] <- NA     ##How can we work on making this into desired values?
-
-      n <- 0
-      for(a in data_clean$comment.overall) {
-            n <- n + 1
-            
-            headers <- c("X-Mashape-Key" = key)                           
-            url <- parse_url("https://twinword-sentiment-analysis.p.mashape.com/analyze/")
-            url$query <- list("text" = a)                                            
-            response <- POST(build_url(url), add_headers(headers),         
-                             content_type("application/x-www-form-urlencoded"),   
-                             accept_json())
-            #response <<- response
-            stripWhiteSpace()
-            
-            content <- content(response, "parsed")
-            
-            print(paste(n, content$result_msg, sep = " "))
-            
-            data_clean$sentType[n] <- content$type
-            data_clean$sentScore[n] <- content$score
-            data_clean$sentRatio[n] <- content$ratio
-      }
+getSentimentTW <- function(sentence_list, key = NULL) {
+      output <- list()        ##A list to store the output information
       
-      return(data_clean$comment.overall)
+      n <- 0                  ##A loop that gets a list of sentences
+      for(a in sentence_list) {
+            if(is.na(a)) {    ##Determines if the sentences is NA value (TRUE or FALSE)
+                  n <- n + 1
+                  output[[n]] <- NA 
+            } else {
+                  ##Creates a dataframe to store the sentiment scores
+                  outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
+
+                  n <- n + 1
+                  for (b in a) {
+                        ##Initializes the Twinword Sentiment API
+                        callTW(b, key)      
+                        ##Sentiment scores are stored in the dataframe      
+                        outputdf$sentType[n] <- content$type
+                        outputdf$sentScore[n] <- content$score
+                        outputdf$sentRatio[n] <- content$ratio
+                  }
+                  ##Dataframe is stored in a list
+                  output[[n]] <- outputdf
+            }
+      }
+      return(output)
 }
 
+
+
 ##Analyze the sentiment of the same comments using Microsoft Azure Sentiment API
-getAzureSentiment <- function(data_clean, n = 10) {
+getSentimentAZ <- function(data_clean, n = 10) {
   data_clean$MINaz <- NA
   data_clean$MAXaz <- NA
   data_clean$MEANaz <- NA
@@ -65,7 +67,7 @@ getAzureSentiment <- function(data_clean, n = 10) {
     n <- 0
     for(a in data_clean$comment.overall) {
       n <- n + 1
-        ##CALL AZURE API
+        ##INITIALIZE AZURE API
         ##SKIP N/A VALUES
         ##GET COMMENT
         ##SET MINIMUM THRESHOLD FOR CHARACTER LENGTH
