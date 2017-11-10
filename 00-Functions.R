@@ -71,8 +71,6 @@ getSentimentAZ <- function(data_clean, n = 10) {
         ##SKIP N/A VALUES
         ##GET COMMENT
         ##SET MINIMUM THRESHOLD FOR CHARACTER LENGTH
-        ##CALL STRINGSPLIT FUNCTION
-        stripWhiteSpace()
         ##RUN AZURE API CALCULATIONS
         textaSentiment(data_clean$comment.overall) ##Sentiment scores - how can we isolate min, max, mean?
         textaKeyPhrases()           ##Determine themes

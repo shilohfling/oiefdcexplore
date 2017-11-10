@@ -4,7 +4,7 @@ library(mscstexta4r)
 library(httr)
 library(sentimentr) ##Calculate Text Polarity Sentiment
 
-#Load Configuration Details
+##Load Configuration Details
 
 ##Initializes mscstexta4r with URL and Key passed here from file .mscskeys.json
 textaInit()
