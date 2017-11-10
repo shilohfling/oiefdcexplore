@@ -21,13 +21,12 @@ data_clean$comment.overall <- as.character(data_raw[,168])
 
 
 
+
+
 ######EXPLORATION#########
+sentlist <- makeSentenceList(data_clean, "comment.overall")
 
-
-
-rsent <- sentiment(data_clean$comment.overall)
-sentences <- get_sentences(rsent)
-
-
+TWlist <- addSentimentTW(sentlist, mykey)
+name <- cbind(sentlist, TWlist)
 results <- textaSentiment(comment[[2]]) ##From the mscstexta4r package
 

@@ -22,69 +22,135 @@ callTW <- function(char, key) {
       response <- POST(build_url(url), add_headers(headers),         
                        content_type("application/x-www-form-urlencoded"),   
                        accept_json())
-      content <- content(response, "parsed")
-      return(content)
+      results <- content(response, "parsed")
+      return(results)
 }
+
+makeSentenceList <- function(df, colname) {
+        x <- df[[colname]]
+        sent_list <- sentiment(x)
+        sentences <- get_sentences(sent_list)
+        sent_list$sentences <- unlist(sentences)
+        return(sent_list)
+}
+
+addSentimentTW <- function(sentence_list, key = NULL) {
+        ##A loop that gets a list of sentences
+        sentType <- character()
+        sentScore <- numeric()
+        sentRatio <- numeric()
+        n <- 0
+        
+        for(sentence in sentence_list$sentences) {
+                n <- n + 1
+                        if(is.na(sentence)) {
+                                sentType[n] <- NA
+                                sentScore[n] <- NA
+                                sentRatio[n] <- NA
+                        } else {
+                                
+                                TWresults <- callTW(sentence, key)
+                                
+                                ##Sentiment scores are stored in the dataframe      
+                                #outputdf$sentType[nn] <- TWresults$type
+                                sentType[n] <- as.character(TWresults$type)
+                                #outputdf$sentScore[nn] <- TWresults$score
+                                sentScore[n] <- as.numeric(TWresults$score)
+                                #outputdf$sentRatio[nn] <- TWresults$ratio
+                                sentRatio[n] <- as.numeric(TWresults$ratio)
+                        }
+                }
+                outputdf <- data.frame(sentType, sentScore, sentRatio)
+                ##Dataframe is stored in a list
+                print(n)
+        
+                return(outputdf)
+        }
+
 
 
 ##Get the sentiment type, score, and ratio for tweets using the twinword API
-getSentimentTW <- function(sentence_list, key = NULL) {
-      output <- list()        ##A list to store the output information
-      
-      n <- 0                  ##A loop that gets a list of sentences
-      for(a in sentence_list) {
-            if(is.na(a)) {    ##Determines if the sentences is NA value (TRUE or FALSE)
-                  n <- n + 1
-                  output[[n]] <- NA 
-            } else {
-                  ##Creates a dataframe to store the sentiment scores
-                  outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
+##for a character vector
+# getSentimentTW <- function(sentence_list, key = NULL) {
+#       output <- list()        ##A list to store the output information
+#       
+#       n <- 0                  ##A loop that gets a list of sentences
+#       for(comments in sentence_list) {
+#               n <- n + 1
+#               nn <- 0
+#               sentType <- character()
+#               sentScore <- numeric()
+#               sentRatio <- numeric()
+#               #outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
+#               for (sentence in comments) {
+#                       nn <- nn + 1
+#                       
+#                       if(is.na(sentence)) {
+#                               break
+#                       } else {
+#                             
+#                               TWresults <- callTW(sentence, key)
+# 
+#                               ##Sentiment scores are stored in the dataframe      
+#                               #outputdf$sentType[nn] <- TWresults$type
+#                               sentType[nn] <- as.character(TWresults$type)
+#                               #outputdf$sentScore[nn] <- TWresults$score
+#                               sentScore[nn] <- as.numeric(TWresults$score)
+#                               #outputdf$sentRatio[nn] <- TWresults$ratio
+#                               sentRatio[nn] <- as.numeric(TWresults$ratio)
+#                       }
+#                 }
+#               outputdf <- data.frame(sentType, sentScore, sentRatio)
+#               ##Dataframe is stored in a list
+#               output[[n]] <- outputdf
+#               print(n)
+#             }
+#       return(output)
+# }
 
-                  n <- n + 1
-                  for (b in a) {
-                        ##Initializes the Twinword Sentiment API
-                        callTW(b, key)      
-                        ##Sentiment scores are stored in the dataframe      
-                        outputdf$sentType[n] <- content$type
-                        outputdf$sentScore[n] <- content$score
-                        outputdf$sentRatio[n] <- content$ratio
-                  }
-                  ##Dataframe is stored in a list
-                  output[[n]] <- outputdf
-            }
-      }
-      return(output)
+
+##A function that uses the Microsoft Azure Sentiment API
+getSentimentMS <- function(sentence_list) {
+        output <- list()        ##A list to store the output information
+        
+        n <- 0                  ##A loop that gets a list of sentences
+        for(comments in sentence_list) {
+                n <- n + 1
+                nn <- 0
+                sentType <- character()
+                sentScore <- numeric()
+                sentRatio <- numeric()
+                #outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
+                for (sentence in comments) {
+                        nn <- nn + 1
+                        
+                        if(is.na(sentence)) {
+                                break
+                        } else {
+                                
+                                TWresults <- textaSentiment()
+                                
+                                ##Sentiment scores are stored in the dataframe      
+                                #outputdf$sentType[nn] <- TWresults$type
+                                sentType[nn] <- as.character(TWresults$type)
+                                #outputdf$sentScore[nn] <- TWresults$score
+                                sentScore[nn] <- as.numeric(TWresults$score)
+                                #outputdf$sentRatio[nn] <- TWresults$ratio
+                                sentRatio[nn] <- as.numeric(TWresults$ratio)
+                        }
+                }
+                outputdf <- data.frame(sentType, sentScore, sentRatio)
+                ##Dataframe is stored in a list
+                output[[n]] <- outputdf
+                print(n)
+        }
+        return(output)
 }
 
-
-
-##Analyze the sentiment of the same comments using Microsoft Azure Sentiment API
-getSentimentAZ <- function(data_clean, n = 10) {
-  data_clean$MINaz <- NA
-  data_clean$MAXaz <- NA
-  data_clean$MEANaz <- NA
-  
-    n <- 0
-    for(a in data_clean$comment.overall) {
-      n <- n + 1
-        ##INITIALIZE AZURE API
-        ##SKIP N/A VALUES
-        ##GET COMMENT
-        ##SET MINIMUM THRESHOLD FOR CHARACTER LENGTH
-        ##RUN AZURE API CALCULATIONS
-        textaSentiment(data_clean$comment.overall) ##Sentiment scores - how can we isolate min, max, mean?
-        textaKeyPhrases()           ##Determine themes
-        ##RETURN VALUE TO RESPECTIVE COLUMN IN DATA_CLEAN BEFORE EXITING LOOP
-        data_clean$MINaz <- min ##I need to look up what exactly the values are
-        data_clean$MAXaz <- max
-        data_clean$MEANaz <- mean 
-    }
-  return(data_clean$comment.overall)
-}
 
 ##Make a function that calls Twinword and Azure to calculate sentiment
 ##Use this to validate sentiment scores and compare the API's to see which is more accurate
-compareSentiment <- function(data_clean) {
-  getTwinwordSentiment()            ##Not fully sure how this is going to play out yet, just an idea
-  getAzureSentiment()  
+compareSentiment <- function(df) {
+  addSentimentTW()            ##Not fully sure how this is going to play out yet, just an idea
+  getSentimentMS()  
 }
