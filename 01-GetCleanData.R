@@ -1,8 +1,16 @@
 ##Load packages
+
+##Package for opening/ reading Excel files
 library(openxlsx)
+##Microsoft Sentiment Analysis API Package
 library(mscstexta4r)
+##Used to for working with URLs and HTTP
 library(httr)
-library(sentimentr) ##Calculate Text Polarity Sentiment
+##Calculate Text Polarity Sentiment
+library(sentimentr) 
+##These two packages are for social network analysis
+library(sna)
+library(igraph)
 
 ##Load Configuration Details
 
@@ -30,4 +38,12 @@ TWlist <- addSentimentTW(sentlist, mykey)
 name <- cbind(sentlist, TWlist)
 results <- textaSentiment(comment[[2]]) ##From the mscstexta4r package
 
-#Make a sentence df
+
+
+##Social Networking Analysis exploration
+##packages sna and igraph will be used here
+##Watched a Lynda tutorial on it
+
+
+
+
