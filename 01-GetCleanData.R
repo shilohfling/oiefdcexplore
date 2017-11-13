@@ -24,9 +24,10 @@ data_clean$comment.overall <- as.character(data_raw[,168])
 
 
 ######EXPLORATION#########
-sentlist <- makeSentenceList(data_clean, "comment.overall")
+sentdf <- makeSentenceDF(data_clean, "comment.overall")
 
 TWlist <- addSentimentTW(sentlist, mykey)
 name <- cbind(sentlist, TWlist)
 results <- textaSentiment(comment[[2]]) ##From the mscstexta4r package
 
+#Make a sentence df

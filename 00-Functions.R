@@ -26,7 +26,7 @@ callTW <- function(char, key) {
       return(results)
 }
 
-makeSentenceList <- function(df, colname) {
+makeSentenceDF <- function(df, colname) {
         x <- df[[colname]]
         sent_list <- sentiment(x)
         sentences <- get_sentences(sent_list)
@@ -111,41 +111,35 @@ addSentimentTW <- function(sentence_list, key = NULL) {
 
 ##A function that uses the Microsoft Azure Sentiment API
 getSentimentMS <- function(sentence_list) {
-        output <- list()        ##A list to store the output information
-        
-        n <- 0                  ##A loop that gets a list of sentences
-        for(comments in sentence_list) {
-                n <- n + 1
                 nn <- 0
-                sentType <- character()
-                sentScore <- numeric()
-                sentRatio <- numeric()
+
+                MSscore <- numeric()
+                MStopics <- character()
                 #outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
-                for (sentence in comments) {
+                for (sentence in sentence_list) {
                         nn <- nn + 1
                         
                         if(is.na(sentence)) {
-                                break
+                                MSscore[nn] <- NA
+                                MStopics[nn] <- NA
                         } else {
                                 
-                                TWresults <- textaSentiment()
-                                
+                                MSresults <- textaSentiment(sentence)
+                                MStopicsResults <- textaKeyPhrases(sentence)
                                 ##Sentiment scores are stored in the dataframe      
                                 #outputdf$sentType[nn] <- TWresults$type
-                                sentType[nn] <- as.character(TWresults$type)
-                                #outputdf$sentScore[nn] <- TWresults$score
-                                sentScore[nn] <- as.numeric(TWresults$score)
-                                #outputdf$sentRatio[nn] <- TWresults$ratio
-                                sentRatio[nn] <- as.numeric(TWresults$ratio)
+                                MSscore[nn] <- MSresults$results$score
+                                MStopics[nn] <- unlist(MStopicsResults$results$keyPhrases)
                         }
-                }
-                outputdf <- data.frame(sentType, sentScore, sentRatio)
+                        yyy<<- MSscore     
+                        xxx <<- MStopics
+                outputdf <- data.frame(MSscore, MStopics)
                 ##Dataframe is stored in a list
-                output[[n]] <- outputdf
-                print(n)
+                print(nn)
+                }
+                return(outputdf)
         }
-        return(output)
-}
+
 
 
 ##Make a function that calls Twinword and Azure to calculate sentiment
