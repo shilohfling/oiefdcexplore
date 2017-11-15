@@ -131,7 +131,7 @@ getSentimentMS <- function(sentence_list) {
                                 MSscore[nn] <- MSresults$results$score
                                 MStopics[nn] <- unlist(MStopicsResults$results$keyPhrases)
                         }
-                        yyy<<- MSscore     
+                        yyy <<- MSscore     
                         xxx <<- MStopics
                 outputdf <- data.frame(MSscore, MStopics)
                 ##Dataframe is stored in a list
@@ -146,5 +146,6 @@ getSentimentMS <- function(sentence_list) {
 ##Use this to validate sentiment scores and compare the API's to see which is more accurate
 compareSentiment <- function(df) {
   addSentimentTW()            ##Not fully sure how this is going to play out yet, just an idea
-  getSentimentMS()  
+  getSentimentMS() 
+  sentimentr()
 }
