@@ -144,6 +144,7 @@ getSentimentMS <- function(sentence_list) {
                 outputdf <- data.frame(MSscore, MStopics)
                 ##Dataframe is stored in a list
                 print(nn)
+                Sys.sleep(60/100)
                 }
                 return(outputdf)
         }

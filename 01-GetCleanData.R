@@ -44,7 +44,7 @@ sentdf$sentences[nchar(sentdf$sentences) < 4] <- NA ## character length < 4 was 
 
 TWdf <- addSentimentTW(sentdf, mykey)           ##Twinword dataframe and call
 sentdf <- cbind(sentdf, TWdf)                   ##Binding the twinword sentiment scores back to the dataframe
-MSdf <- getSentimentMS(sentdf$sentences[1:100]) ##Microsoft Azure sentiment call. Limit 100 per minute.
+MSdf <- getSentimentMS(sentdf$sentences)        ##Microsoft Azure sentiment call. Limit 100 per minute.
 sentdf <- cbind(sentdf, MSdf)                   ##Bind the Azure sentiment data to the data frame
 
 ##Back up data frame for testing
