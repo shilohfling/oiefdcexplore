@@ -26,6 +26,8 @@ callTW <- function(char, key) {
       return(results)
 }
 
+
+
 makeSentenceDF <- function(df, colname) {
         x <- df[[colname]]
         sent_list <- sentiment(x)
@@ -126,13 +128,19 @@ getSentimentMS <- function(sentence_list) {
                                 
                                 MSresults <- textaSentiment(sentence)
                                 MStopicsResults <- textaKeyPhrases(sentence)
+                                
+                                MSresults <<- MSresults
+                                MStopicsResults <<- MStopicsResults
                                 ##Sentiment scores are stored in the dataframe      
                                 #outputdf$sentType[nn] <- TWresults$type
                                 MSscore[nn] <- MSresults$results$score
-                                MStopics[nn] <- unlist(MStopicsResults$results$keyPhrases)
+                                if (length(MStopicsResults$results$keyPhrases[[1]]) > 0) {
+                                        MStopics[nn] <- paste(MStopicsResults$results$keyPhrases[[1]], collapse = ", ")
+                                        
+                                        } else {
+                                        MStopics[nn] <- NA
+                                }
                         }
-                        yyy <<- MSscore     
-                        xxx <<- MStopics
                 outputdf <- data.frame(MSscore, MStopics)
                 ##Dataframe is stored in a list
                 print(nn)
