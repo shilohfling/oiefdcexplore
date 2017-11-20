@@ -27,15 +27,23 @@ callTW <- function(char, key) {
 }
 
 
+##A function used to parse sentences apart
+# makeSentenceDF <- function(df, colname) {
+#         x <- df[[colname]]
+#         sent_list <- sentiment(x)
+#         sentences <- get_sentences(sent_list)
+#         sent_list$sentences <- unlist(sentences)
+#         return(sent_list)
+# }
 
+##Load tidytext package before using this function
 makeSentenceDF <- function(df, colname) {
-        x <- df[[colname]]
-        sent_list <- sentiment(x)
-        sentences <- get_sentences(sent_list)
-        sent_list$sentences <- unlist(sentences)
-        return(sent_list)
+        x <- df %>%
+                unnest_tokens_("SENTENCES", colname, token = "sentences")
+        return(x)
 }
 
+##A function used to get the sentiment scores from the Twinword API
 addSentimentTW <- function(sentence_list, key = NULL) {
         ##A loop that gets a list of sentences
         sentType <- character()

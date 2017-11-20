@@ -13,6 +13,7 @@ library(sna)
 library(igraph)
 ##A package used for data frame manipulation
 library(dplyr)
+library(tidytext)
 
 ##Load Configuration Details
 
@@ -27,7 +28,18 @@ data_raw <- read.xlsx("../sources/RM_Outcomes Survey Data_2-20-2017_Working Resp
 data_clean$comment.overall <- as.character(data_raw[,168])
 ##Create a blank data frame of student ids to put scrubbed data into
 data_clean <- data.frame("id.student" = data_raw$`Student.ID.(Complete)`)
+
+##Stuffing the data frame with demographics information
 data_clean$comment.overall <- data_raw$`The.following.is.the.final.survey.question..Choosing.next.after.the.question.will.submit.your.responses..Final.Question:.Do.you.have.any.recommendations.to.improve.the.overall.Webster.experience.or.final.comments.you.would.like.to.share?`
+data_clean$program.code <- data_raw$Program.Code
+data_clean$degree <- data_raw$`Degree.(not.scrubbed)`
+data_clean$campus <- data_raw$`Combined.Campus.Location.(FOR.REPORTING)`
+data_clean$major <- data_raw$`Major.1.(from.Recipients.and.Response.Rates.Data.Set)`
+data_clean$department <- data_raw$`Department.(from.Recipients.and.Response.Rates.Data.Set)`
+data_clean$school <- data_raw$`School.(not.scrubbed)`
+
+
+
 
 ##Because of the nature of the data set, there were comments where people responded with "No" or "N/A"
 ##This caused confusion in the algorithm, so we set a threshold in order to change them to NA values
@@ -46,17 +58,17 @@ write.csv(sentdf, "comment.overall.csv")        ##Save the sentiment data frame 
 
 ##A function that asks for a data frame and the maximum rows in the data frame and adds an element ID
 ##This will be used to rejoin data frames
-elementID <- function(df, maxID) {
-        n <- 0
-        data_clean$element_id <- NA
-        while (n < maxID) {
-                n <- n + 1
-                data_clean$element_id[[n]]<- n
-                print(n)
-        }
-        return(data_clean)
-}
-data_clean <- elementID(data_clean, 6227)
+# elementID <- function(df, maxID) {
+#         n <- 0
+#         data_clean$element_id <- NA
+#         while (n < maxID) {
+#                 n <- n + 1
+#                 data_clean$element_id[[n]]<- n
+#                 print(n)
+#         }
+#         return(data_clean)
+# }
+# data_clean <- elementID(data_clean, 6227)
 ##Need to join sentdf and data_clean using dplyr
 ##Need to be brought together through the common element ID since the sentences are parsed
         
