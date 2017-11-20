@@ -1,6 +1,15 @@
 ##An R Script for ideas that we are exploring
 
 
+
+####################ALTERNATE METHOD FOR PARSING SENTENCES####################
+library(tidytext)
+library(dplyr)
+
+x <- data_clean %>%
+        unnest_tokens(SENTENCES, comment.overall, "sentences")
+
+
 ####################PLOTTING EXPLORATION####################
 ##Back up data frames for messing with
 bananas <- data_clean
