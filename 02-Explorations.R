@@ -1,5 +1,6 @@
 ##An R Script for ideas that we are exploring
 
+
 ####################PLOTTING EXPLORATION####################
 ##Back up data frames for messing with
 bananas <- data_clean
