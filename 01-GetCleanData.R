@@ -47,6 +47,10 @@ sentdf <- cbind(sentdf, TWdf)                   ##Binding the twinword sentiment
 MSdf <- getSentimentMS(sentdf$sentences)        ##Microsoft Azure sentiment call. Limit 100 per minute.
 sentdf <- cbind(sentdf, MSdf)                   ##Bind the Azure sentiment data to the data frame
 
+saveRDS(sentdf, "comment.overall.RDS")
+write.csv(sentdf, "comment.overall.csv")
+
+
 ##Back up data frame for testing
 testMSdf <- as.data.frame(MSdf)
 ##Rounding the sentiment scores 
