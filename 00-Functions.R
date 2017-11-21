@@ -1,8 +1,15 @@
-##FEATURES:
-##First check the .Renviron for the appropriate API key
-##Second, it should use a key passed as an argument
-##How can we work on keeping this versatile and calling mutliple columns as a vector?
-
+##Package for opening/ reading Excel files
+library(openxlsx)
+##Microsoft Sentiment Analysis API Package
+library(mscstexta4r)
+##Used for working with URLs and HTTP
+library(httr)
+##Calculate Text Polarity Sentiment
+library(sentimentr) 
+##A package used for data frame manipulation
+library(dplyr)
+##Text analysis tools for dplyre
+library(tidytext)
 
 # stripWhiteSpace <- function(data_clean) {
 #   n <- 0
@@ -15,7 +22,13 @@
 # }
 
 ##TwinWord API call
-callTW <- function(char, key) {
+callTW <- function(char) {
+      if (Sys.getenv(env_var_name) == "TWApiKey") {
+            stop(cat("Please place token file in .Renviron or in working directory as 'token.txt'."))
+      } else {
+            key <- Sys.getenv(env_var_name) 
+      }
+
       headers <- c("X-Mashape-Key" = key)                           
       url <- parse_url("https://twinword-sentiment-analysis.p.mashape.com/analyze/")
       url$query <- list("text" = char)                                            
@@ -159,10 +172,10 @@ getSentimentMS <- function(sentence_list) {
 
 
 
-##Make a function that calls Twinword and Azure to calculate sentiment
-##Use this to validate sentiment scores and compare the API's to see which is more accurate
-compareSentiment <- function(df) {
-  addSentimentTW()            ##Not fully sure how this is going to play out yet, just an idea
-  getSentimentMS() 
-  sentimentr()
-}
+# ##Make a function that calls Twinword and Azure to calculate sentiment
+# ##Use this to validate sentiment scores and compare the API's to see which is more accurate
+# compareSentiment <- function(df) {
+#   addSentimentTW()            ##Not fully sure how this is going to play out yet, just an idea
+#   getSentimentMS() 
+#   sentimentr()
+# }
