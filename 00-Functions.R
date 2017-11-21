@@ -11,22 +11,12 @@ library(dplyr)
 ##Text analysis tools for dplyre
 library(tidytext)
 
-# stripWhiteSpace <- function(data_clean) {
-#   n <- 0
-#   for (a in data_clean) {
-#     n <- n + 1
-#     data_clean$comment.overall[n] <- strsplit(comment, "\\.|\\?|\\!")
-#     data_clean$comment.overall[n] <- lapply(comment, function(x) x <- x[!x == ""])
-#   }
-#   return(data_clean$comment.overall)
-# }
-
 ##TwinWord API call
 callTW <- function(char) {
-      if (Sys.getenv(env_var_name) == "TWApiKey") {
+      if (Sys.getenv("TWApiKey") == "") {
             stop(cat("Please place token file in .Renviron or in working directory as 'token.txt'."))
       } else {
-            key <- Sys.getenv(env_var_name) 
+            key <- Sys.getenv("TWApiKey") 
       }
 
       headers <- c("X-Mashape-Key" = key)                           
@@ -39,6 +29,111 @@ callTW <- function(char) {
       return(results)
 }
 
+##Load tidytext package before using this function
+makeSentenceDF <- function(df, colname, thresh) {
+      df[[colname]][is.na(df[[colname]])] <- ""
+      x <- df %>%
+            rename_("FOR_ANALYSIS" = colname) %>% 
+            select(-contains("comment")) %>% 
+            unnest_tokens("sentences", "FOR_ANALYSIS", token = "sentences")
+        
+        ##Specify a length of sentence to replace with NA
+        x$sentences[nchar(x$sentences) < thresh] <- NA 
+        
+        return(x)
+}
+
+##A function used to get the sentiment scores from the Twinword API
+addSentimentTW <- function(sentence_list) {
+      ##A loop that gets a list of sentences
+      sentType <- character()
+      sentScore <- numeric()
+      sentRatio <- numeric()
+      n <- 0
+        
+      for(sentence in sentence_list$sentences) {
+            n <- n + 1
+            if(is.na(sentence)) {
+                  sentType[n] <- NA
+                  sentScore[n] <- NA
+                  sentRatio[n] <- NA
+            } else {
+                  TWresults <- callTW(sentence)
+                  print(TWresults$type)
+                  sentType[n] <- as.character(TWresults$type)
+                  sentScore[n] <- as.numeric(TWresults$score)
+                  sentRatio[n] <- as.numeric(TWresults$ratio)
+            }
+            print(n)
+      }
+      outputdf <- data.frame(sentType, sentScore, sentRatio)
+      return(outputdf)
+}
+
+##A function that uses the Microsoft Azure Sentiment API
+addSentimentMS <- function(sentence_list) {
+      nn <- 0
+      
+      MSscore <- numeric()
+      MStopics <- character()
+      
+      for (sentence in sentence_list$sentences) {
+            nn <- nn + 1
+                        
+            if(is.na(sentence)) {
+                  MSscore[nn] <- NA
+                  MStopics[nn] <- NA
+            } else {
+                  MSresults <- textaSentiment(sentence)
+                  MStopicsResults <- textaKeyPhrases(sentence)
+                  
+                  MSscore[nn] <- MSresults$results$score
+                  if (length(MStopicsResults$results$keyPhrases[[1]]) > 0) {
+                        MStopics[nn] <- paste(MStopicsResults$results$keyPhrases[[1]], collapse = ", ")
+                  } else {
+                        MStopics[nn] <- NA
+                  }
+                  
+            }
+            print(nn)
+            Sys.sleep(60/100)
+      }
+      outputdf <- data.frame(MSscore, MStopics)
+      return(outputdf)
+}
+
+checkExists <- function(dir, col) {
+      files <- list.files(dir)
+      files <- gsub("(.*)\\.RDS$", "\\1", files)
+      
+      if(col %in% files) {
+            stop("An object already exists with the supplied name.")
+      }
+}
+
+###UNUSED FUNCTIONS
+
+# ##Make a function that calls Twinword and Azure to calculate sentiment
+# ##Use this to validate sentiment scores and compare the API's to see which is more accurate
+# compareSentiment <- function(df) {
+#   addSentimentTW()            ##Not fully sure how this is going to play out yet, just an idea
+#   getSentimentMS() 
+#   sentimentr()
+# }
+
+##A function that asks for a data frame and the maximum rows in the data frame and adds an element ID
+##This will be used to rejoin data frames
+# elementID <- function(df, maxID) {
+#         n <- 0
+#         data_clean$element_id <- NA
+#         while (n < maxID) {
+#                 n <- n + 1
+#                 data_clean$element_id[[n]]<- n
+#                 print(n)
+#         }
+#         return(data_clean)
+# }
+
 
 ##A function used to parse sentences apart
 # makeSentenceDF <- function(df, colname) {
@@ -49,133 +144,12 @@ callTW <- function(char) {
 #         return(sent_list)
 # }
 
-##Load tidytext package before using this function
-makeSentenceDF <- function(df, colname) {
-        x <- df %>%
-                unnest_tokens_("SENTENCES", colname, token = "sentences")
-        return(x)
-}
-
-##A function used to get the sentiment scores from the Twinword API
-addSentimentTW <- function(sentence_list, key = NULL) {
-        ##A loop that gets a list of sentences
-        sentType <- character()
-        sentScore <- numeric()
-        sentRatio <- numeric()
-        n <- 0
-        
-        for(sentence in sentence_list$sentences) {
-                n <- n + 1
-                        if(is.na(sentence)) {
-                                sentType[n] <- NA
-                                sentScore[n] <- NA
-                                sentRatio[n] <- NA
-                        } else {
-                                
-                                TWresults <- callTW(sentence, key)
-                                
-                                ##Sentiment scores are stored in the dataframe      
-                                #outputdf$sentType[nn] <- TWresults$type
-                                sentType[n] <- as.character(TWresults$type)
-                                #outputdf$sentScore[nn] <- TWresults$score
-                                sentScore[n] <- as.numeric(TWresults$score)
-                                #outputdf$sentRatio[nn] <- TWresults$ratio
-                                sentRatio[n] <- as.numeric(TWresults$ratio)
-                        }
-                }
-                outputdf <- data.frame(sentType, sentScore, sentRatio)
-                ##Dataframe is stored in a list
-                print(n)
-        
-                return(outputdf)
-        }
-
-
-
-##Get the sentiment type, score, and ratio for tweets using the twinword API
-##for a character vector
-# getSentimentTW <- function(sentence_list, key = NULL) {
-#       output <- list()        ##A list to store the output information
-#       
-#       n <- 0                  ##A loop that gets a list of sentences
-#       for(comments in sentence_list) {
-#               n <- n + 1
-#               nn <- 0
-#               sentType <- character()
-#               sentScore <- numeric()
-#               sentRatio <- numeric()
-#               #outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
-#               for (sentence in comments) {
-#                       nn <- nn + 1
-#                       
-#                       if(is.na(sentence)) {
-#                               break
-#                       } else {
-#                             
-#                               TWresults <- callTW(sentence, key)
-# 
-#                               ##Sentiment scores are stored in the dataframe      
-#                               #outputdf$sentType[nn] <- TWresults$type
-#                               sentType[nn] <- as.character(TWresults$type)
-#                               #outputdf$sentScore[nn] <- TWresults$score
-#                               sentScore[nn] <- as.numeric(TWresults$score)
-#                               #outputdf$sentRatio[nn] <- TWresults$ratio
-#                               sentRatio[nn] <- as.numeric(TWresults$ratio)
-#                       }
-#                 }
-#               outputdf <- data.frame(sentType, sentScore, sentRatio)
-#               ##Dataframe is stored in a list
-#               output[[n]] <- outputdf
-#               print(n)
-#             }
-#       return(output)
-# }
-
-
-##A function that uses the Microsoft Azure Sentiment API
-getSentimentMS <- function(sentence_list) {
-                nn <- 0
-
-                MSscore <- numeric()
-                MStopics <- character()
-                #outputdf <- data.frame("sentType" = NA, "sentScore" = NA, "sentRatio" = NA)
-                for (sentence in sentence_list) {
-                        nn <- nn + 1
-                        
-                        if(is.na(sentence)) {
-                                MSscore[nn] <- NA
-                                MStopics[nn] <- NA
-                        } else {
-                                
-                                MSresults <- textaSentiment(sentence)
-                                MStopicsResults <- textaKeyPhrases(sentence)
-                                
-                                MSresults <<- MSresults
-                                MStopicsResults <<- MStopicsResults
-                                ##Sentiment scores are stored in the dataframe      
-                                #outputdf$sentType[nn] <- TWresults$type
-                                MSscore[nn] <- MSresults$results$score
-                                if (length(MStopicsResults$results$keyPhrases[[1]]) > 0) {
-                                        MStopics[nn] <- paste(MStopicsResults$results$keyPhrases[[1]], collapse = ", ")
-                                        
-                                        } else {
-                                        MStopics[nn] <- NA
-                                }
-                        }
-                outputdf <- data.frame(MSscore, MStopics)
-                ##Dataframe is stored in a list
-                print(nn)
-                Sys.sleep(60/100)
-                }
-                return(outputdf)
-        }
-
-
-
-# ##Make a function that calls Twinword and Azure to calculate sentiment
-# ##Use this to validate sentiment scores and compare the API's to see which is more accurate
-# compareSentiment <- function(df) {
-#   addSentimentTW()            ##Not fully sure how this is going to play out yet, just an idea
-#   getSentimentMS() 
-#   sentimentr()
+# stripWhiteSpace <- function(data_clean) {
+#   n <- 0
+#   for (a in data_clean) {
+#     n <- n + 1
+#     data_clean$comment.overall[n] <- strsplit(comment, "\\.|\\?|\\!")
+#     data_clean$comment.overall[n] <- lapply(comment, function(x) x <- x[!x == ""])
+#   }
+#   return(data_clean$comment.overall)
 # }
