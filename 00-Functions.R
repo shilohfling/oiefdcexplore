@@ -14,7 +14,7 @@ library(tidytext)
 ##TwinWord API call
 callTW <- function(char) {
       if (Sys.getenv("TWApiKey") == "") {
-            stop(cat("Please place token file in .Renviron or in working directory as 'token.txt'."))
+            stop(cat("Please place token file in .Renviron."))
       } else {
             key <- Sys.getenv("TWApiKey") 
       }

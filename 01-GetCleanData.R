@@ -21,3 +21,7 @@ data_clean$comment.overall <- as.character(data_raw[,168])
 data_clean$comment.definingmoments <- as.character(data_raw[,103])
 data_clean$comment.recommendations <- as.character(data_raw[,104])
 
+##Clean xml character line break and other static that affects sentence parsing
+data_clean$comment.overall <- gsub("_x000D_\r\n|\r\n", " ", data_clean$comment.overall)
+data_clean$comment.definingmoments <- gsub("_x000D_\r\n|\r\n", " ", data_clean$comment.definingmoments)
+data_clean$comment.recommendations <- gsub("_x000D_\r\n|\r\n", " ", data_clean$comment.recommendations)
