@@ -1,35 +1,31 @@
 library(ggplot2)
+library(dplyr)
 
-plotData1 <- commentWordsDF %>%
-        group_by(major, sentence_id) %>% 
-        #group_by(major) %>%
-        top_n(10, MSscore)
+campus_top_10 <- commentWordsDF %>% 
+                subset(CAMPUS_COUNT > 1) %>%
+                group_by(campus) %>%
+                top_n(-10, CAMPUS_MEAN) %>%
+                top_n(10, CAMPUS_MEAN) %>%
+                unnest_tokens(campus_top_10, WORD, drop = FALSE)        
+        
 
-testing2 <- commentWordsDF
-testing2 <- unique(testing2)
-testing2 <- as.data.frame(testing2)
-
-campus_top_10 <- subset(commentWordsDF, campus == "Webster Groves, MO") %>%
-                #unique(MStopics) %>%
-                #unique(sentences) %>%
-                #select(campus) %>%
-                group_by(campus, sentences) %>%
-                #min(CAMPUS_MEAN) %>%
-                #max(CAMPUS_MEAN) %>%
-                top_n(10, CAMPUS_MEAN)
-
-dept_top_10 <- subset(commentWordsDF, department == "Business") %>%
-        group_by(department, sentences) %>%
-        top_n(10, DEPT_DG_MEAN)
+dept_top_10 <- commentWordsDF %>% 
+                subset(DEPT_DG_COUNT > 1) %>%
+                group_by(department) %>%
+                top_n(-10, DEPT_DG_MEAN) %>%
+                top_n(10, DEPT_DG_MEAN) %>%
+                unnest_tokens(dept_top_10, WORD, drop = FALSE) 
 
 
-major_top_10 <- commentWordsDF %>%
-        #unique(id.student) %>%
-        #unique(sentences) %>%
-        group_by(major, sentences) %>%
-        top_n(10, MAJOR_MEAN)
+major_top_10 <- commentWordsDF %>% 
+                subset(MAJOR_COUNT > 1) %>%
+                group_by(major) %>%
+                top_n(-10, MAJOR_MEAN) %>%
+                top_n(10, MAJOR_MEAN) %>%
+                unnest_tokens(major_top_10, WORD, drop = FALSE) 
 
 
 
 ##########EXPLORATION##########
-examplePlot <- ggplot()
+examplePlot <- ggplot(campus_top_10, aes(CAMPUS_COUNT, campus)) + geom_point()
+examplePlot
