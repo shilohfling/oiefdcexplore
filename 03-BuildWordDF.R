@@ -16,7 +16,9 @@ commentWordsDF <- sentDF %>%
         group_by(department, degree, WORD) %>%          ##Subsetting the data based on Department & Degree
         mutate(DEPT_DG_MEAN = mean(sentiment)) %>%      
         mutate(DEPT_DG_COUNT = n()) %>% 
-        anti_join(stop_words %>% filter(lexicon == "snowball") %>% select(word), 
+        anti_join(stop_words %>% 
+                          #filter(lexicon == "snowball") %>% 
+                          select(word), 
                   by = c("WORD" = "word")) %>% ##Remove the stop words, i.e. the, i, and
         ungroup
 
