@@ -5,6 +5,8 @@ sentDF <- readRDS("../sources/comments/comment.definingmoments.RDS")
 commentWordsDF <- sentDF %>%
         
         unnest_tokens(WORD, sentences, drop = FALSE) %>%
+        group_by(element_id) %>%                       ##Subsetting the data based on Major
+        mutate(COMMENT_MEAN = mean(sentiment)) %>% 
         group_by(major, WORD) %>%                       ##Subsetting the data based on Major
         mutate(MAJOR_MEAN = mean(sentiment)) %>% 
         mutate(MAJOR_COUNT = n()) %>%
@@ -15,7 +17,8 @@ commentWordsDF <- sentDF %>%
         mutate(DEPT_DG_MEAN = mean(sentiment)) %>%      
         mutate(DEPT_DG_COUNT = n()) %>% 
         anti_join(stop_words %>% filter(lexicon == "snowball") %>% select(word), 
-                  by = c("WORD" = "word"))              ##Remove the stop words, i.e. the, i, and
+                  by = c("WORD" = "word")) %>% ##Remove the stop words, i.e. the, i, and
+        ungroup
 
 ##EXPLORATION - Find a way to melt the sentences into words, but carry their sentiment with them
 ##Then find the mean of MSscores across each word

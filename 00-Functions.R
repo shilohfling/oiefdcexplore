@@ -36,11 +36,13 @@ makeSentenceDF <- function(df, colname, thresh) {
             rename_("FOR_ANALYSIS" = colname) %>% 
             select(-contains("comment")) %>% 
             unnest_tokens("sentences", "FOR_ANALYSIS", token = "sentences")
-        
-        ##Specify a length of sentence to replace with NA
-        x$sentences[nchar(x$sentences) < thresh] <- NA 
-        
-        return(x)
+      
+      ##Specify a length of sentence to replace with NA
+      x$sentences[nchar(x$sentences) < thresh] <- NA 
+      
+      ##Add a comment and sentence ID #
+      
+      return(x)
 }
 
 ##A function used to get the sentiment scores from the Twinword API
