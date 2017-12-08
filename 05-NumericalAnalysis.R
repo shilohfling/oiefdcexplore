@@ -20,12 +20,19 @@ NumAnalysis1$library.resources <- data_raw$`Please.rate.your.level.of.satisfacti
 NumAnalysis1$technology <- data_raw$`Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.h..Using.Webster.technology.to.assist.in.my.learning`
 NumAnalysis1$writing.center <- data_raw$`Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.i..Accessing.and.using.the.Writing.Center`
 NumAnalysis1$career.planning <- data_raw$`Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.j..Assistance.with.career.planning`
-
+NumAnalysis1$major <- data_raw$`Major.1.(from.Recipients.and.Response.Rates.Data.Set)`
+NumAnalysis1$campcomb <- data_raw$`Combined.Campus.Location.(FOR.REPORTING)`
+NumAnalysis1$department <- data_raw$`Department.(from.Recipients.and.Response.Rates.Data.Set)`
+NumAnalysis1$school <- data_raw$`School.(not.scrubbed)`
 
 #####EXPLORATION FOR PLOTTING THE DATA#####
 # #dataRange = as.data.frame(c(0:5))
-# section1 <- ggplot(NumAnalysis1, aes(x=admissions)) + geom_bar()
-# section1
+section1 <- ggplot(NumAnalysis1, aes(x=admissions)) + geom_bar()
+section1
+
+scatterplot <- ggplot(NumAnalysis1, aes(x=paying.tuition)) + geom_point(aes(y="count"))
+scatterplot
+
 # section1q <- hist(NumAnalysis1$admissions)
 # section1q
 # ##Try likert package
@@ -62,3 +69,20 @@ mean(NumAnalysis1a)
 p7 <- ggplot(NumAnalysis1)
 p7 + geom_bar()
 p7
+
+
+
+##Let's melt some data
+library(reshape2)
+NumAnalysis1MELT <- melt(NumAnalysis1, id.vars = c("id.student", "major", "campcomb", "department", "school"))
+
+section1 <- ggplot(NumAnalysis1MELT, aes(value, fill = school)) + 
+        geom_bar() + 
+        facet_wrap(~variable) + 
+        theme(legend.position="bottom", legend.box = "horizontal") +
+        labs(subtitle="Sentiment based on School/College") +
+        xlab("") +
+        ylab("# of students")
+section1
+
+ggsave("NumAnalysis1Plot.jpg", plot = section1, width = 15, height = 10, units = "in")
