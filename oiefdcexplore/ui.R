@@ -10,25 +10,41 @@
 library(shiny)
 library(shinydashboard)
 
-ui <- dashboardPage((skin="blue"),
-  dashboardHeader("Survey Results"),
+ui <- dashboardPage(
+        skin="blue",
+  dashboardHeader(
+          title = "Survey Results"
+          ),
   dashboardSidebar(
-    fluidRow(
-      h2("Choose demographics")
-    )
-  ),
+          sidebarMenu(
+                  menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+                  menuItem("Results", tabName = "widgets", icon = icon("th")),
+                  menuItem("Sign In", tabName = "widgets", icon = icon("th"))
+          )
+    ),
   dashboardBody(
-    fluidRow(
-      h1("School/College")
-    ),
-    fluidRow(
-      h1("Department")
-    ),
-    fluidRow(
-      h1("Major")
-    )
+          tabItems(
+                  # First tab content
+                  tabItem(tabName = "results",
+                          fluidRow(
+                                  box(plotOutput("plot1", height = 250)),
+                                  
+                                  box(
+                                          title = "Controls",
+                                          sliderInput("slider", "Number of observations:", 1, 100, 50)
+                                  )
+                          )
+                  ),
+                  
+                  # Second tab content
+                  tabItem(tabName = "widgets",
+                          h2("Sign in")
+                  )
+          )
   )
-)
+  )
+ 
+
 
 
 # # Define UI for application that draws a histogram
