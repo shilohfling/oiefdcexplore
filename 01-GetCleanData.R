@@ -1,5 +1,7 @@
+library(openxlsx)
+
 ##Load Custom Functions
-source("00-Functions.R")
+#source("00-Functions.R")
 
 ##Load raw data from excel file
 data_raw <- read.xlsx("../sources/RM_Outcomes Survey Data_2-20-2017_Working Response - macro.xlsm", 
