@@ -15,10 +15,12 @@ shinyUI(fluidPage(
                                     choices = c("All", dept_choices)),
                         selectInput(inputId = "major",
                                     label = "Major(s):",
-                                    choices = c("All",major_choices))
+                                    choices = c("All",major_choices)),
+                        downloadButton('downloadReport')
                 ),
                 mainPanel(
-                        plotOutput("Data Plot"),
+                        #plotOutput(""), 
+                        ## Plotting option will come later
                         tableOutput("view")
                 )
         )
