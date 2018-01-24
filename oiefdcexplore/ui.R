@@ -11,7 +11,7 @@ shinyUI(fluidPage(
                                     label = "Campus(es):",
                                     choices = c("All", campus_choices)),
                         selectInput(inputId = "dept",
-                                    label = "Department(s):",
+                                    label = "Department(s):", 
                                     choices = c("All", dept_choices)),
                         selectInput(inputId = "major",
                                     label = "Major(s):",
