@@ -9,7 +9,6 @@ cols <- c("Campus" = "Campus.(not.scrubbed)",
           "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
           "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
           "StudentID" = "Student.ID.(Complete)",
-          "First_Name" = "Recipient.First.Name",
           "Q33" = "Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.a..Applying.to.and.being.admitted.by.Webster")
 
 ##Load the data object from disk
@@ -28,7 +27,7 @@ shinyServer(function(input, output) {
         
         output$mainbody <- renderUI({
                 fluidPage(
-                        theme = shinytheme("flatly"),
+                        theme = shinytheme("yeti"),
                         #shinythemes::themeSelector(),
                         title = "Outcomes Subset Export Tool",
                         
@@ -49,9 +48,18 @@ shinyServer(function(input, output) {
                                                      choices = major_choices,
                                                      multiple = TRUE)
                                  ),
+                                 
                                  mainPanel(
-                                        DT::dataTableOutput("table"),
-                                        plotOutput("plot")
+                                ## View the subsetted options into two tabs - Table and Plot
+                                tabsetPanel(type = "tabs",
+                                             tabPanel("Data table",
+                                                     DT::dataTableOutput("table")
+                                             ),
+
+                                             tabPanel("Plot", plotOutput("plot"))
+
+                                 )
+                                 
                                  )
                          )
                 )
@@ -89,7 +97,7 @@ shinyServer(function(input, output) {
                         DT <- DT[DT$Major %in% input$major, ]   
                 }
                 
-                ggplot(DT, aes(Q33, fill = Q33)) + geom_histogram()
+                ggplot(DT, aes(Q33, fill = Campus)) + geom_histogram() + xlim(0.5,4.5)
         })
         
 })
