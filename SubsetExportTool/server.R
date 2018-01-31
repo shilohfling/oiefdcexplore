@@ -3,29 +3,52 @@ library(shinythemes)
 library(DT)
 library(ggplot2)
 library(dplyr)
+library(purrr)
 
 ##Create a character vector of the columns to make available for export
 cols <- c("Campus" = "Campus.(not.scrubbed)", 
           "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
           "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
-          "StudentID" = "Student.ID.(Complete)",
-          "Q33" = "Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.a..Applying.to.and.being.admitted.by.Webster",
-          "Q34" = "Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.b..Initial.orientation.to.Webster.and.my.program.of.study",
-          "Q35" = "Please.rate.your.level.of.satisfaction.with.the.following.Webster.University.processes..-.c..Academic.advising")
+          "StudentID" = "Student.ID.(Complete)")
+
+questionsIndex <- read.csv("~/Data/oiefdcexplore/questionIndex.csv")
 
 ##Load the data object from disk
-data <- readRDS("~/Data/oiefdcexplore/data.RDS")
-data <- data[, cols]
-colnames(data) <- names(cols)
+dataraw <- readRDS("~/Data/oiefdcexplore/data.RDS")
+
+datanew <- dataraw[, cols]
+colnames(datanew) <- names(cols)
+
+data <- dataraw[, as.character(questionsIndex$Qualtrics)]
+colnames(data) <- questionsIndex$Question
+data <- cbind(datanew, data)
 
 ##Create subset choice vectors
 campus_choices <- unique(sort(data$Campus)) 
 dept_choices <- unique(sort(data$Department))
 major_choices <- unique(sort(data$Major))
 
+##Make a named list of questions
+question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
+        map(~ as.character(.x$Shortname))
+
 shinyServer(function(input, output) {
-        vals <- reactiveValues()
-        vals$data <- data
+
+        datasetInput <- reactive({
+                DTX <- data
+                
+                DTX <- DTX[DTX$Campus %in% input$campus, ]
+                
+                if (!is.null(input$dept)){
+                        DTX <- DTX[DTX$Department %in% input$dept, ]
+                }
+                
+                if (!is.null(input$major)){
+                        DTX <- DTX[DTX$Major %in% input$major, ]   
+                }
+                
+                DTX
+        })
         
         output$mainbody <- renderUI({
                 fluidPage(
@@ -47,23 +70,17 @@ shinyServer(function(input, output) {
                                                      label = "Major(s):",
                                                      choices = major_choices,
                                                      multiple = TRUE),
-                                         ## Trying to figure out how to add the questions
-                                         ## to be selected by check box
-                                         ## Hopefully can wrap this inside of a drop down menu
-                                         # conditionalPanel(
-                                         #         'input.dataset === "data"',
-                                         #         checkboxGroupInput("show_vars", "Select question(s):",
-                                         #                            names(data), selected = names(data))
-                                         # )
+                                         selectizeInput(inputId = "questions",
+                                                     label = "Question(s):",
+                                                     choices = question_choices,
+                                                     multiple = TRUE),
                                          downloadButton("downloadData", "Download")
                                  ),
                                  
                                 mainPanel(
                                 ## View the subsetted options into two tabs - Table and Plot
                                 tabsetPanel(type = "tabs",
-                                             tabPanel("Data table",
-                                                     DT::dataTableOutput("table")
-                                             ),
+                                             tabPanel("Data table", DT::dataTableOutput("table")),
                                              tabPanel("Plot", plotOutput("plot"))
                                         )
                                  )
@@ -72,28 +89,8 @@ shinyServer(function(input, output) {
         })
         
         output$table <- DT::renderDataTable({
-                DT <- vals$data
-                
-                DT <- DT[DT$Campus %in% input$campus, ]
-                
-                if (!is.null(input$dept)){
-                        DT <- DT[DT$Department %in% input$dept, ]
-                }
-
-                if (!is.null(input$major)){
-                        DT <- DT[DT$Major %in% input$major, ]   
-                }
-                
-                
-                DT::datatable(DT, select = "none",
+                DT::datatable(datasetInput(), select = "none",
                               options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 10))
-        })
-        
-        selectedData <- reactive ({
-                switch(data,
-                       "Campus" = campus_choices,
-                       "Department" = dept_choices,
-                       "Major" = major_choices)
         })
         
         output$info <- renderPrint ({
@@ -101,36 +98,19 @@ shinyServer(function(input, output) {
         })
         
         output$plot <- renderPlot({
-                DT <- vals$data
-                
-                DT <- DT[DT$Campus %in% input$campus, ]
-                
-                if (!is.null(input$dept)){
-                        DT <- DT[DT$Department %in% input$dept, ]
-                }
-                
-                if (!is.null(input$major)){
-                        DT <- DT[DT$Major %in% input$major, ]   
-                }
-                
                 ## Want to facet wrap this by selected questions
                 ## Currently just facet wrap by campus for demonstration
-                ggplot(DT, aes(Q33, fill = Department)) + geom_histogram() + xlim(0.5,4.5) + facet_wrap(~Campus)
+                ggplot(datasetInput(), aes(`33`, fill = Department)) + geom_histogram() + xlim(0.5,4.5) + facet_wrap(~Campus)
         })
         
+        output$value <- renderPrint({
+                input$checkGroup
+                })
+        
         output$downloadData <- downloadHandler(
-                filename = function() {
-                        paste("Outcomes", ".csv", sep = "")
-                },
+                filename = "mydownload.csv",
                 content = function(file) {
-                        write.csv(selectedData(), file)
+                        write.csv(datasetInput(), file)
                 }
         )
-        
-        ## Trying to figure out how to add the questions 
-        # data2 = data[sample(nrow(data), 1000), ]
-        # output$mytable1 <- DT::renderDataTable({
-        #         DT::datatable(data2[, input$show_vars, drop = FALSE])
-        # })
-        
 })
