@@ -149,8 +149,8 @@ shinyServer(function(input, output, session) {
         
         output$report <- renderTable({
                 if(nrow(datasetInput()) > 1) {
-                        #sjt.frq(datasetInput()$Degree, ignore.strings = TRUE)
-                        datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
+                        sjmisc::frq(data, Degree)
+                        #datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
                 }
         })
         
