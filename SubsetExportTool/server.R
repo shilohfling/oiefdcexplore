@@ -5,13 +5,15 @@ library(ggplot2)
 library(dplyr)
 library(purrr)
 library(sjPlot)
+library(sjmisc)
 
 
 ##Create a character vector of the columns to make available for export
-cols <- c("Campus" = "Campus.(not.scrubbed)", 
-          "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
+cols <- c("School" = "School.(not.scrubbed)",
           "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
-          "StudentID" = "Student.ID.(Complete)")
+          "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
+          "Campus" = "Campus.(not.scrubbed)",
+          "Degree" = "Degree.(not.scrubbed)")
 
 questionsIndex <- read.csv("sources/questionIndex.csv")
 ##questionsIndex <- read.csv("~/Data/oiefdcexplore/questionIndex.csv")
@@ -23,15 +25,17 @@ dataraw <- readRDS("sources/data.RDS")
 datanew <- dataraw[, cols]
 colnames(datanew) <- names(cols)
 
-data <- dataraw[, as.character(questionsIndex$Qualtrics)]
+data <- dataraw[, 33:102]
 colnames(data) <- questionsIndex$Question
 data <- lapply(data, as.factor)
 data <- cbind(datanew, data)
+
 
 ##Create subset choice vectors
 campus_choices <- c(unique(sort(data$Campus)), "Select All")
 dept_choices <- unique(sort(data$Department))
 major_choices <- unique(sort(data$Major))
+school_choices <- unique(sort(data$School))
 
 ##Make a named list of questions
 question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
@@ -52,7 +56,7 @@ shinyServer(function(input, output, session) {
                       updateSelectInput(session, "campus", selected = selected_campus_choices)
                 }
                 
-                DTX <- DTX[DTX$Campus %in% input$campus, ]
+                DTX <- DTX[DTX$School %in% input$school, ]
                 
                 if (!is.null(input$dept)){
                         DTX <- DTX[DTX$Department %in% input$dept, ]
@@ -60,6 +64,10 @@ shinyServer(function(input, output, session) {
                 
                 if (!is.null(input$major)){
                         DTX <- DTX[DTX$Major %in% input$major, ]   
+                }
+                
+                if (!is.null(input$campus)){
+                        DTX <- DTX[DTX$Campus %in% input$campus, ]
                 }
                 
                 ##Exract the questions and join back the ones select
@@ -87,9 +95,9 @@ shinyServer(function(input, output, session) {
                         
                         sidebarLayout(
                                  sidebarPanel(
-                                         selectInput(inputId = "campus",
-                                                     label = "Campus(es):",
-                                                     choices = campus_choices,
+                                         selectInput(inputId = "school",
+                                                     label = "School/ College:",
+                                                     choices = school_choices,
                                                      multiple = TRUE),
                                          selectInput(inputId = "dept",
                                                      label = "Department(s):", 
@@ -99,6 +107,12 @@ shinyServer(function(input, output, session) {
                                                      label = "Major(s):",
                                                      choices = major_choices,
                                                      multiple = TRUE),
+                                         hr(),
+                                         selectInput(inputId = "campus",
+                                                     label = "Campus(es):",
+                                                     choices = campus_choices,
+                                                     multiple = TRUE),
+                                         hr(),
                                          selectizeInput(inputId = "questions",
                                                      label = "Question(s):",
                                                      choices = question_choices,
@@ -110,7 +124,8 @@ shinyServer(function(input, output, session) {
                                 ## View the subsetted options into two tabs - Table and Plot
                                 tabsetPanel(type = "tabs",
                                              tabPanel("Data table", DT::dataTableOutput("table")),
-                                             tabPanel("Plot", plotOutput("plot"))
+                                             tabPanel("Report", tableOutput("report")),
+                                             tabPanel("Likert Plot", plotOutput("plot"))
                                         )
                                  )
                          )
@@ -130,6 +145,13 @@ shinyServer(function(input, output, session) {
               if(nrow(datasetInput()) > 1 && length(input$questions) >= 1) {
                     sjp.likert(select(datasetInput(), starts_with("Q")))
               }
+        })
+        
+        output$report <- renderTable({
+                if(nrow(datasetInput()) > 1) {
+                        #sjt.frq(datasetInput()$Degree, ignore.strings = TRUE)
+                        datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
+                }
         })
         
         output$value <- renderPrint({
