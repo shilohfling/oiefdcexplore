@@ -153,7 +153,7 @@ shinyServer(function(input, output, session) {
                         #datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
                 }
         })
-        
+        ##
         output$value <- renderPrint({
                 input$checkGroup
                 })
