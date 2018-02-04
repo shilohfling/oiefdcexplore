@@ -164,10 +164,6 @@ shinyServer(function(input, output, session) {
               }
         )
         
-        # output$value <- renderPrint({
-        #         input$checkGroup
-        #         })
-        
         output$downloadData <- downloadHandler(
                 filename = "mydownload.csv",
                 content = function(file) {
