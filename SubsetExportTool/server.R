@@ -6,6 +6,7 @@ library(dplyr)
 library(purrr)
 library(sjPlot)
 library(sjmisc)
+library(rmarkdown)
 
 
 ##Create a character vector of the columns to make available for export
@@ -117,7 +118,8 @@ shinyServer(function(input, output, session) {
                                                      label = "Question(s):",
                                                      choices = question_choices,
                                                      multiple = TRUE),
-                                         downloadButton("downloadData", "Download")
+                                         downloadButton("downloadData", "Download Data"),
+                                         downloadButton("downloadReport", "Download Report")
                                  ),
                                  
                                 mainPanel(
@@ -153,10 +155,18 @@ shinyServer(function(input, output, session) {
                         #datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
                 }
         })
-        ##
-        output$value <- renderPrint({
-                input$checkGroup
-                })
+        
+        output$downloadReport <- downloadHandler(
+              filename = "myreportpdf.pdf",
+              content = function(file) {
+                    out <- render("download_report.Rmd", pdf_document())
+                    file.rename(out, file)
+              }
+        )
+        
+        # output$value <- renderPrint({
+        #         input$checkGroup
+        #         })
         
         output$downloadData <- downloadHandler(
                 filename = "mydownload.csv",
