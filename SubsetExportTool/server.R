@@ -8,11 +8,13 @@ library(sjPlot)
 library(sjmisc)
 library(rmarkdown)
 
+source("functions.R")
 
 ##Create a character vector of the columns to make available for export
 cols <- c("School" = "School.(not.scrubbed)",
           "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
           "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
+          "Program.Level" = "Program.Code",
           "Campus" = "Campus.(not.scrubbed)",
           "Degree" = "Degree.(not.scrubbed)")
 
@@ -139,22 +141,26 @@ shinyServer(function(input, output, session) {
                               options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 10))
         })
         
-        output$info <- renderPrint ({
-                selectedData()
-        })
+        # output$info <- renderPrint ({
+        #         selectedData()
+        # })
         
         output$plot <- renderPlot({
               if(nrow(datasetInput()) > 1 && length(input$questions) >= 1) {
-                    sjp.likert(select(datasetInput(), starts_with("Q")))
+                    testQ(datasetInput())
               }
         })
         
         output$report <- renderTable({
-                if(nrow(datasetInput()) > 1) {
-                        sjmisc::frq(datasetInput(), Degree)
-                        #datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
-                }
+              Q1table(datasetInput())
         })
+        
+        # output$report <- renderTable({
+        #         if(nrow(datasetInput()) > 1) {
+        #                 sjmisc::frq(datasetInput(), Degree)
+        #                 #datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
+        #         }
+        # })
         
         output$downloadReport <- downloadHandler(
               filename = "myreportpdf.pdf",

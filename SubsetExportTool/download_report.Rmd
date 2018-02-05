@@ -6,5 +6,7 @@ output: pdf_document
 ---
 
 ```{r}
-head(datasetInput())
+source("functions.R")
+x <- Q1table(datasetInput())
+xtable::xtable(x[[1]])
 ```
