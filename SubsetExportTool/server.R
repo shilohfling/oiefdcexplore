@@ -127,9 +127,15 @@ shinyServer(function(input, output, session) {
                                 mainPanel(
                                 ## View the subsetted options into two tabs - Table and Plot
                                 tabsetPanel(type = "tabs",
-                                             tabPanel("Data table", DT::dataTableOutput("table")),
-                                             tabPanel("Report", tableOutput("report")),
-                                             tabPanel("Likert Plot", plotOutput("plot"))
+                                            tabPanel("Data table", DT::dataTableOutput("table")),
+                                            tabPanel("Report", br(),
+                                                     h4("Response Rates"), 
+                                                     "Table 1. Outcomes Survey Response Rates by Program Level", br(), tableOutput("report1"), 
+                                                     hr(), 
+                                                     h4("Overall Satisfaction with Webster"),
+                                                     "Table 2.", br(), tableOutput("report2"), br(),
+                                                     hr()),
+                                            tabPanel("Likert Plot", plotOutput("plot"))
                                         )
                                  )
                          )
@@ -151,8 +157,12 @@ shinyServer(function(input, output, session) {
               }
         })
         
-        output$report <- renderTable({
-              Q1table(datasetInput())
+        output$report1 <- renderTable({
+                Q1table(datasetInput())
+        })
+        
+        output$report2 <- renderTable({
+                Q2table(datasetInput())
         })
         
         # output$report <- renderTable({
