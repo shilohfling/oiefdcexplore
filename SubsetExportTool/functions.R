@@ -1,13 +1,13 @@
 Table1 <- function(x) {##Response Rates
-      x %>% add_count(Program.Level, Finished) %>% 
+      x %>% add_count(Program.Level, DataSet) %>% 
             rename(Total.Respondents = n) %>% 
             add_count(Program.Level) %>% 
             rename(Total.Graduates = n) %>% 
             mutate(Response.Rate = Total.Respondents/Total.Graduates) %>% 
-            group_by(Program.Level, Finished, Total.Graduates, Total.Respondents, Response.Rate) %>% 
+            group_by(Program.Level, DataSet, Total.Graduates, Total.Respondents, Response.Rate) %>% 
             summarise() %>% ungroup() %>% 
-            filter(Finished == TRUE) %>% 
-            select(-Finished)
+            filter(DataSet == "Responder") %>% 
+            select(-DataSet)
 }
 
 TableQ <- function(x, questions) {

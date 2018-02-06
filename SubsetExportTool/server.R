@@ -16,7 +16,7 @@ cols <- c("School" = "School.(not.scrubbed)",
           "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
           "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
           "Program.Level" = "Program.Code",
-          "Finished" = "Finished",
+          "DataSet" = "DataSet",
           "Campus" = "Campus.(not.scrubbed)",
           "Degree" = "Degree.(not.scrubbed)")
 
