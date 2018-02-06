@@ -7,6 +7,7 @@ library(purrr)
 library(sjPlot)
 library(sjmisc)
 library(rmarkdown)
+library(tidyr)
 
 source("functions.R")
 
@@ -15,6 +16,7 @@ cols <- c("School" = "School.(not.scrubbed)",
           "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
           "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
           "Program.Level" = "Program.Code",
+          "Finished" = "Finished",
           "Campus" = "Campus.(not.scrubbed)",
           "Degree" = "Degree.(not.scrubbed)")
 
@@ -30,7 +32,7 @@ colnames(datanew) <- names(cols)
 
 data <- dataraw[, 33:102]
 colnames(data) <- questionsIndex$Question
-data <- lapply(data, as.factor)
+#data <- lapply(data, as.factor)
 data <- cbind(datanew, data)
 
 
@@ -47,6 +49,10 @@ question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
 #Make a named vector to correlate input options to column name
 question_shortname_column_index <- questionsIndex$Question
 names(question_shortname_column_index) <- questionsIndex$Shortname
+
+
+
+
 
 shinyServer(function(input, output, session) {
 
@@ -74,18 +80,18 @@ shinyServer(function(input, output, session) {
                 }
                 
                 ##Exract the questions and join back the ones select
-                DTXquestions <- DTX %>% select(starts_with("Q"))
-                DTX <- DTX %>% select(-starts_with("Q"))
+                #DTXquestions <- DTX %>% select(starts_with("Q"))
+                #DTX <- DTX %>% select(-starts_with("Q"))
                 
-                DTXquestions <- DTXquestions[, question_shortname_column_index[input$questions]]
+                #DTXquestions <- DTXquestions[, question_shortname_column_index[input$questions]]
                 
                 ##If the length is one, the vector is returned and the name of the object is the colname
                 ##This isn't elegant, but lets us control the colname of a single question
-                if(length(input$questions) == 1) {
-                      DTX <- cbind(DTX, "Q" = DTXquestions)
-                } else {
-                      DTX <- cbind(DTX, DTXquestions)
-                }
+                #if(length(input$questions) == 1) {
+                #      DTX <- cbind(DTX, "Q" = DTXquestions)
+                #} else {
+                #      DTX <- cbind(DTX, DTXquestions)
+                #}
                 
                 DTX
         })
@@ -128,13 +134,7 @@ shinyServer(function(input, output, session) {
                                 ## View the subsetted options into two tabs - Table and Plot
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Data table", DT::dataTableOutput("table")),
-                                            tabPanel("Report", br(),
-                                                     h4("Response Rates"), 
-                                                     "Table 1. Outcomes Survey Response Rates by Program Level", br(), tableOutput("report1"), 
-                                                     hr(), 
-                                                     h4("Overall Satisfaction with Webster"),
-                                                     "Table 2.", br(), tableOutput("report2"), br(),
-                                                     hr()),
+                                            tabPanel("Report", uiOutput("report")),
                                             tabPanel("Likert Plot", plotOutput("plot"))
                                         )
                                  )
@@ -147,30 +147,37 @@ shinyServer(function(input, output, session) {
                               options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 10))
         })
         
-        # output$info <- renderPrint ({
-        #         selectedData()
-        # })
-        
         output$plot <- renderPlot({
               if(nrow(datasetInput()) > 1 && length(input$questions) >= 1) {
                     testQ(datasetInput())
               }
         })
         
-        output$report1 <- renderTable({
-                Q1table(datasetInput())
+        output$table1 <- renderTable({
+                Table1(datasetInput())
+        })
+
+        output$table2 <- renderTable({
+                TableQ(datasetInput(), c("Q101", "Q102"))
         })
         
-        output$report2 <- renderTable({
-                Q2table(datasetInput())
+        output$table3 <- renderTable({
+              TableQ(datasetInput(), paste0("Q", 83:90))
         })
         
-        # output$report <- renderTable({
-        #         if(nrow(datasetInput()) > 1) {
-        #                 sjmisc::frq(datasetInput(), Degree)
-        #                 #datasetInput() %>% group_by(Degree) %>% summarise("n" = n())
-        #         }
-        # })
+        output$report <- renderUI({
+              tagList(
+                    h4("Response Rates"), 
+                    "Table 1. Outcomes Survey Response Rates by Program Level", 
+                    br(), 
+                    tableOutput("table1"), 
+                    hr(), 
+                    h4("Overall Satisfaction with Webster"),
+                    "Table 2.", br(), tableOutput("table2"),
+                    h4("Mission Outcomes"),
+                    "Table 3.", br(), tableOutput("table3")
+                    )
+        })
         
         output$downloadReport <- downloadHandler(
               filename = "myreportpdf.pdf",
