@@ -11,43 +11,14 @@ library(tidyr)
 library(openxlsx)
 
 source("functions.R")
-
-##Create a character vector of the columns to make available for export
-cols <- c("School" = "School.(not.scrubbed)",
-          "Department" = "Department.(from.Recipients.and.Response.Rates.Data.Set)",
-          "Major" = "Major.1.(from.Recipients.and.Response.Rates.Data.Set)",
-          "Program.Level" = "Program.Code",
-          "DataSet" = "DataSet",
-          "Campus" = "Campus.(not.scrubbed)",
-          "Degree" = "Degree.(not.scrubbed)")
-
-
-## TODO: Make source file
-#questionsIndex <- read.csv("sources/questionIndex.csv")
-questionsIndex <- read_xlsx("sources/questionIndex.xlsx")
-
-##Load the data object from disk
-dataraw <- readRDS("sources/data.RDS")
-
-datanew <- dataraw[, cols]
-colnames(datanew) <- names(cols)
-
-## TODO: Make more flexible, not hard coded
-data <- dataraw
-##Remove dupes
-
-colnames(data) <- questionsIndex$Question
-
-## TODO: more data cleaning
-#data <- lapply(data, as.factor)
-data <- cbind(datanew, data)
-
+source("questionIndex.R")
+source("loadData.R")
 
 ##Create subset choice vectors
-campus_choices <- c(unique(sort(data$Campus)), "Select All")
-dept_choices <- unique(sort(data$Department))
-major_choices <- unique(sort(data$Major))
-school_choices <- unique(sort(data$School))
+campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")
+dept_choices <- unique(sort(data$X.Dept))
+major_choices <- unique(sort(data$X.Major))
+school_choices <- unique(sort(data$X.School))
 
 ##Make a named list of questions
 question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
@@ -72,18 +43,18 @@ shinyServer(function(input, output, session) {
                       updateSelectInput(session, "campus", selected = selected_campus_choices)
                 }
                 
-                DTX <- DTX[DTX$School %in% input$school, ]
+                DTX <- DTX[DTX$X.School %in% input$school, ]
                 
                 if (!is.null(input$dept)){
-                        DTX <- DTX[DTX$Department %in% input$dept, ]
+                        DTX <- DTX[DTX$X.Dept %in% input$dept, ]
                 }
                 
                 if (!is.null(input$major)){
-                        DTX <- DTX[DTX$Major %in% input$major, ]   
+                        DTX <- DTX[DTX$X.Major %in% input$major, ]   
                 }
                 
                 if (!is.null(input$campus)){
-                        DTX <- DTX[DTX$Campus %in% input$campus, ]
+                        DTX <- DTX[DTX$X.Campus1 %in% input$campus, ]
                 }
                 
                 ##Exract the questions and join back the ones select

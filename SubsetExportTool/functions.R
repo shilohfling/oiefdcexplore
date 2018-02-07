@@ -1,27 +1,27 @@
 Table1 <- function(x) {##Response Rates
-      x %>% add_count(Program.Level, DataSet) %>%
-            rename(Total.Respondents = n) %>%
-            add_count(Program.Level) %>%
-            rename(Total.Graduates = n) %>%
-            mutate(Response.Rate = Total.Respondents/Total.Graduates) %>%
-            group_by(Program.Level, DataSet, Total.Graduates, Total.Respondents, Response.Rate) %>%
+      x %>% add_count(X.Program.Level, X.Data.Set) %>%
+            rename(F.Total.Respondents = n) %>%
+            add_count(X.Program.Level) %>%
+            rename(F.Total.Graduates = n) %>%
+            mutate(F.Response.Rate = F.Total.Respondents/F.Total.Graduates) %>%
+            group_by(X.Program.Level, X.Data.Set, F.Total.Graduates, F.Total.Respondents, F.Response.Rate) %>%
             summarise() %>% ungroup() %>%
-            filter(DataSet == "Responder")  %>%
-            select(-DataSet)
+            filter(X.Data.Set == "Responder")  %>%
+            select(-X.Data.Set)
 }
 
 TableQ <- function(x, questions) {
-      x %>% select(School:Degree, questions) %>% 
+      x %>% select(X.Program.Level, questions) %>% 
             gather("Q", "V", starts_with("Q")) %>% 
             group_by(Q) %>% na.omit() %>% 
-            mutate("Overall.Avg" = mean(V)) %>% 
+            mutate(F.Overall.Avg = mean(V)) %>% 
             ungroup() %>% 
-            group_by(Q, Program.Level) %>% 
-            mutate("Program.Level.Avg" = mean(V)) %>% 
+            group_by(Q, X.Program.Level) %>% 
+            mutate(F.Program.Level.Avg = mean(V)) %>% 
             ungroup() %>% 
-            group_by(Q, Program.Level, Overall.Avg, Program.Level.Avg) %>% 
+            group_by(Q, X.Program.Level, F.Overall.Avg, F.Program.Level.Avg) %>% 
             summarise() %>% 
-            spread(Program.Level, Program.Level.Avg) %>% 
+            spread(X.Program.Level, F.Program.Level.Avg) %>% 
             rename(GRAD.Avg = GRAD) %>% 
             rename(UNDG.Avg = UNDG)
 }
