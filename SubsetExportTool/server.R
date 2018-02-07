@@ -20,6 +20,8 @@ cols <- c("School" = "School.(not.scrubbed)",
           "Campus" = "Campus.(not.scrubbed)",
           "Degree" = "Degree.(not.scrubbed)")
 
+
+## TODO: Make source file
 questionsIndex <- read.csv("sources/questionIndex.csv")
 ##questionsIndex <- read.csv("~/Data/oiefdcexplore/questionIndex.csv")
 
@@ -30,8 +32,11 @@ dataraw <- readRDS("sources/data.RDS")
 datanew <- dataraw[, cols]
 colnames(datanew) <- names(cols)
 
+## TODO: Make more flexible, not hard coded
 data <- dataraw[, 33:102]
 colnames(data) <- questionsIndex$Question
+
+## TODO: more data cleaning
 #data <- lapply(data, as.factor)
 data <- cbind(datanew, data)
 
@@ -165,6 +170,44 @@ shinyServer(function(input, output, session) {
               TableQ(datasetInput(), paste0("Q", 83:90))
         })
         
+        output$table4 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 71:73))
+        })
+        
+        output$table5 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 43:48))
+        })
+        
+        output$table6 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 74:82))
+        })
+        
+        output$table7 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 33:42))
+        })
+        
+        output$table8 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 105))
+        })
+        
+        output$table9 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 108:109))
+        })
+        output$table10 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 110:113))
+        })
+        output$table11 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 114:117))
+        })
+        
+        output$table12 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 122))
+        })
+        
+        output$table13 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 118))
+        })
+        
         output$report <- renderUI({
               tagList(
                     h4("Response Rates"), 
@@ -172,10 +215,63 @@ shinyServer(function(input, output, session) {
                     br(), 
                     tableOutput("table1"), 
                     hr(), 
+                    
+                    ## Start of Overall Satisfaction with Webster Section
                     h4("Overall Satisfaction with Webster"),
                     "Table 2.", br(), tableOutput("table2"),
+                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    hr(),
+                    ## End of Overall Satisfaction with Webster Section
+                    
+                    ## Start of Mission Outcomes Section
                     h4("Mission Outcomes"),
-                    "Table 3.", br(), tableOutput("table3")
+                    "Table 3.", br(), tableOutput("table3"),
+                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    hr(), 
+                    ## End of Mission Outcomes Section
+                    
+                    ## Start of Learning Environment Section
+                    h4("Learning Environment"),
+                    "Table 4.", br(), tableOutput("table4"),
+                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    br(), br(),
+                    "Table 5.", br(), tableOutput("table5"),
+                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    br(), br(),
+                    "Table 6. (Undergraduates only)", br(), tableOutput("table6"),
+                    "Scale: Very Significant (4); Somewhat Significant (3); Not Very Significant (2); Not At All Significant (1)",
+                    br(), br(),
+                    "Table 7.", br(), tableOutput("table7"),
+                    "Scale: Very Satisfied (4); Mostly Satisfied (3); Mostly Dissatisfied (2); Very Dissatisfied (1)",
+                    hr(), 
+                    ## End of Learning Environment Section
+                    
+                    ## Start of Career Outcomes Section
+                    h4("Career Outcomes"),
+                    "Table 8.", br(), tableOutput("table8"),
+                    hr(),
+                    ## End of Career Outcomes Section
+                    
+                    ## Start of Career Outcomes - Employment Section
+                    h4("Career Outcomes - Employment"),
+                    "Table 9.", br(), tableOutput("table9"),
+                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)", 
+                    br(),
+                    "Note: Averages are based on respondents who indicated they were employed full- or part-time as their primary activity.", 
+                    br(), br(),
+                    "Table 10.", br(), tableOutput("table10"),
+                    "Note: Percentages are based on respondents who indicated they were employed full- or part-time as their primary activity.", 
+                    br(), br(),
+                    "Table 11.", br(), tableOutput("table11"),
+                    "Note: Percentages are based on respondents who indicated they were employed full- or part-time as their primary activity.", 
+                    br(), br(),
+                    "Table 12.", br(), tableOutput("table12"),
+                    br(),
+                    "Table 13.", br(), tableOutput("table13"),
+                    "Note: Averages are based on respondents who indicated they were employed full- or part-time as their primary activity.",
+                    hr()
+                    ## End of Career Outcomes - Employment Section
+                    
                     )
         })
         

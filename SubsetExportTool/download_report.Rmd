@@ -19,3 +19,53 @@ Table 3:
 ```{r echo=FALSE}
 knitr::kable(TableQ(datasetInput(), paste0("Q", 83:90)))
 ```
+
+Table 4:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 71:73)))
+```
+
+Table 5:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 43:48)))
+```
+
+Table 6:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 74:82)))
+```
+
+Table 7:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 33:42)))
+```
+
+Table 8:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 105)))
+```
+
+Table 9:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 108:109)))
+```
+
+Table 10:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 110:113)))
+```
+
+Table 11:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 114:117)))
+```
+
+Table 12:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 122)))
+```
+
+Table 13:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 118)))
+```
