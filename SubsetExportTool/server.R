@@ -8,6 +8,7 @@ library(sjPlot)
 library(sjmisc)
 library(rmarkdown)
 library(tidyr)
+library(openxlsx)
 
 source("functions.R")
 
@@ -22,18 +23,19 @@ cols <- c("School" = "School.(not.scrubbed)",
 
 
 ## TODO: Make source file
-questionsIndex <- read.csv("sources/questionIndex.csv")
-##questionsIndex <- read.csv("~/Data/oiefdcexplore/questionIndex.csv")
+#questionsIndex <- read.csv("sources/questionIndex.csv")
+questionsIndex <- read_xlsx("sources/questionIndex.xlsx")
 
 ##Load the data object from disk
-#dataraw <- readRDS("~/Data/oiefdcexplore/data.RDS")
 dataraw <- readRDS("sources/data.RDS")
 
 datanew <- dataraw[, cols]
 colnames(datanew) <- names(cols)
 
 ## TODO: Make more flexible, not hard coded
-data <- dataraw[, 33:102]
+data <- dataraw
+##Remove dupes
+
 colnames(data) <- questionsIndex$Question
 
 ## TODO: more data cleaning
@@ -193,9 +195,11 @@ shinyServer(function(input, output, session) {
         output$table9 <- renderTable({
                 TableQ(datasetInput(), paste0("Q", 108:109))
         })
+        
         output$table10 <- renderTable({
                 TableQ(datasetInput(), paste0("Q", 110:113))
         })
+        
         output$table11 <- renderTable({
                 TableQ(datasetInput(), paste0("Q", 114:117))
         })
