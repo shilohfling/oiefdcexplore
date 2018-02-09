@@ -1,4 +1,4 @@
-x <- read_xlsx("sources/questionIndex.xlsx")
+x <- read.xlsx("sources/questionIndex.xlsx")
 
 ##Create the "front" of a question that applies to all the qs in a matrix
 x$QA <- gsub("(^.*)\\.\\.\\w*.*$", "\\1", x$Qualtrics)
