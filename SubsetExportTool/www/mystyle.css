@@ -1,0 +1,13 @@
+body {
+    /* Background design */
+    background-image: url("https://instructure-uploads.s3.amazonaws.com/account_180000000085240/attachments/53502025/CanvasWebsterLogo_login.svg?AWSAccessKeyId=AKIAJFNFXH2V2O7RPCAA&Expires=1936742155&Signature=V0WeM7MZPu0twNMpfUSMzMqLe7Q%3D&response-cache-control=Cache-Control%3Amax-age%3D473364000.0%2C%20public&response-expires=473364000.0");
+    background-color: #004990;
+    background-size: 25%;
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    
+    /* Font design*/
+    font-family: Arial, Helvetica, sans-serif;
+    color: #FFFFFF;
+}
+
