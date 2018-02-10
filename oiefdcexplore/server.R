@@ -40,6 +40,12 @@ shinyServer(function(input, output, session) {
           user[1,]    
         })
         
+        output$title <- renderText({
+          if(is.null(user())){
+            return("ERROR: This application is designed to be run in Shiny Server Pro and to require authentication.")
+          }
+        })
+        
         df <- reactive({
                 head(data, input$nrows)
         })
