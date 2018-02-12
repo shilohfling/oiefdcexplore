@@ -51,3 +51,5 @@ Table7 <- function(x, questions) {
                 spread(Q, X.Program.Level, F.Program.Level.Avg, F.Respondents.in.Avg)
 }
 
+
+
