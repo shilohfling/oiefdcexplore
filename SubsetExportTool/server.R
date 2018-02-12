@@ -80,8 +80,7 @@ shinyServer(function(input, output, session) {
                         #theme = shinytheme("yeti"),
                         theme = "mystyle.css",
                         br(), br(),
-                        titlePanel("Outcomes Subset Export Tool"), br(), br(),
-                        
+                        titlePanel(div(HTML("<b><center>Outcomes Subset Export Tool</b>"))), br(), br(),
                         sidebarLayout(
                                  sidebarPanel(
                                          h3("Please select data: "),
@@ -110,17 +109,21 @@ shinyServer(function(input, output, session) {
                                 mainPanel(
                                 ## View the subsetted options into two tabs - Table and Plot
                                 tabsetPanel(type = "tabs",
-                                            tabPanel("Data table", DT::dataTableOutput("table")),
-                                            tabPanel("Report", uiOutput("report"))
-                                        )
-                                 )
+                                            tabPanel("Data table", class = "one",
+                                                     div(HTML("<h2><b><center>AY 2016-2017 Responses</center></b></h2>")),
+                                                     DT::dataTableOutput("table")),
+                                            tabPanel("Report", class = "one",
+                                                     div(HTML("<h2><b><center>AY 2016-2017 Responses</center></b></h2>")),
+                                                     uiOutput("report"))
+                                            )
+                                )
                          )
                 )
         })
         
         output$table <- DT::renderDataTable({
                 DT::datatable(datasetInput(), select = "none",
-                              options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 10))
+                              options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 5))
         })
         
         output$plot <- renderPlot({

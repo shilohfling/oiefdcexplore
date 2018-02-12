@@ -5,19 +5,25 @@ body {
         height: 100vh;
         background-position: bottom left;
         background-color: #004990;
+        /*
+        background-color: #ffffff;
+        color: #B7B9BC;
+        */
+        color: #000000;       
+        font-family: 'Georgia', sans-serif;
 }
 
 h2 {
         font-family: 'Georgia', sans-serif;
         font-size: 30px;
-        color: #ffffff;
+        color: #FFFFFF;
         display: inline;
 }
 
 h3 {
         font-family: 'Georgia', sans-serif;
         font-size: 25px;
-        color: #000000;
+        color: #004990;
         display: inline;
 }
 
@@ -42,15 +48,23 @@ h6 {
         display: inline;
 }
 
+th {
+    background-color: #f9ba53;
+    color: #004990;
+}
+
 .myTitle {
         margin-top: 100px;
         margin-bottom: 50px;
         text-align: center;
 }
 
+/*
+WORK SPACE
+
 .myContent {
-        background-color: #004990;
-        background-color: rgba(255, 255, 255, .5);
+        background-color: #FFFFFF;
+        background-color: rgba(0, 73, 144, .5);
         padding-top: 20px;
         padding-right: 20px;
         padding-left: 20px;
@@ -59,31 +73,18 @@ h6 {
 }
 
 .tabs .content {
-    z-index: 0;/* or display: none; */
+    z-index: 0;
     overflow: hidden;
     width: 600px;
-    padding: 25px;
     position: absolute;
     top: 27px;
     left: 0;
-    background: #303030;
+    background: #FFFFFF;
     color: #DFDFDF;
     
     opacity:0;
     transition: opacity 400ms ease-out;
 }
-
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ffffff;
-    border-top: none;
-}
-
-
-
-/* WORK SPACE
-
 
 */
 
