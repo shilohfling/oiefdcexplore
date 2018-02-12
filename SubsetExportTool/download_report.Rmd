@@ -1,0 +1,51 @@
+---
+title: "Outcomes Report"
+author: "Webster University"
+date: "2/4/2018"
+output: pdf_document
+---
+Table 1:
+```{r echo=FALSE}
+source("functions.R")
+knitr::kable(Table1(datasetInput()))
+```
+
+Table 2:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), c("Q101", "Q102")))
+```
+
+Table 3:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 83:90)))
+```
+
+Table 4:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 71:73)))
+```
+
+Table 5:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 43:48)))
+```
+
+Table 6:
+```{r echo=FALSE}
+knitr::kable(Table6(datasetInput(), paste0("Q", 74:82)))
+```
+
+Table 7:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 33:42)))
+```
+
+Table 8:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 105)))
+```
+
+Table 9:
+```{r echo=FALSE}
+knitr::kable(TableQ(datasetInput(), paste0("Q", 108:109)))
+```
