@@ -79,31 +79,32 @@ shinyServer(function(input, output, session) {
                         #shinythemes::themeSelector(),
                         #theme = shinytheme("yeti"),
                         theme = "mystyle.css",
-                        titlePanel("Outcomes Subset Export Tool"),
+                        br(), br(),
+                        titlePanel("Outcomes Subset Export Tool"), br(), br(),
                         
                         sidebarLayout(
                                  sidebarPanel(
                                          h3("Please select data: "),
-                                         br(),
+                                         br(), hr(),
                                          selectInput(inputId = "school",
-                                                     label = "School/ College:",
+                                                     label = h5("School/ College:"),
                                                      choices = school_choices,
                                                      multiple = TRUE),
                                          selectInput(inputId = "dept",
-                                                     label = "Department(s):", 
+                                                     label = h5("Department(s):"), 
                                                      choices = dept_choices,
                                                      multiple = TRUE),
                                          selectInput(inputId = "major",
-                                                     label = "Major(s):",
+                                                     label = h5("Major(s):"),
                                                      choices = major_choices,
                                                      multiple = TRUE),
                                          selectInput(inputId = "campus",
-                                                     label = "Campus(es):",
+                                                     label = h5("Campus(es):"),
                                                      choices = campus_choices,
                                                      multiple = TRUE),
                                          hr(),
-                                         downloadButton("downloadData", "Download Data"),
-                                         downloadButton("downloadReport", "Download Report")
+                                         downloadButton("downloadData", h5("Download Data")),
+                                         downloadButton("downloadReport", h5("Download Report"))
                                  ),
                                  
                                 mainPanel(
@@ -171,54 +172,54 @@ shinyServer(function(input, output, session) {
                     #              ".shiny-output-error { visibility: hidden; }",
                     #              ".shiny-output-error:before { visibility: hidden; }"
                     # ),
-                    h4("Response Rates"), 
-                    "Table 1. Outcomes Survey Response Rates by Program Level", 
+                    h4("Response Rates"), br(),
+                    h5("Table 1. Outcomes Survey Response Rates by Program Level"), 
                     br(), 
                     tableOutput("table1"), 
                     hr(), 
                     
                     ## Start of Overall Satisfaction with Webster Section
-                    h4("Overall Satisfaction with Webster"),
-                    "Table 2.", br(), tableOutput("table2"),
-                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    h4("Overall Satisfaction with Webster"), br(),
+                    h5("Table 2."), br(), tableOutput("table2"),
+                    h6("Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"),
                     hr(),
                     ## End of Overall Satisfaction with Webster Section
                     
                     ## Start of Mission Outcomes Section
-                    h4("Mission Outcomes"),
-                    "Table 3.", br(), tableOutput("table3"),
-                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    h4("Mission Outcomes"), br(),
+                    h5("Table 3."), br(), tableOutput("table3"),
+                    h6("Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"),
                     hr(), 
                     ## End of Mission Outcomes Section
                     
                     ## Start of Learning Environment Section
-                    h4("Learning Environment"),
-                    "Table 4.", br(), tableOutput("table4"),
-                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    h4("Learning Environment"), br(),
+                    h5("Table 4."), br(), tableOutput("table4"),
+                    h6("Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"),
                     br(), br(),
-                    "Table 5.", br(), tableOutput("table5"),
-                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)",
+                    h5("Table 5."), br(), tableOutput("table5"),
+                    h6("Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"),
                     br(), br(),
-                    "Table 6. (Undergraduates only)", br(), tableOutput("table6"),
-                    "Scale: Very Significant (4); Somewhat Significant (3); Not Very Significant (2); Not At All Significant (1)",
+                    h5("Table 6. (Undergraduates only)"), br(), tableOutput("table6"),
+                    h6("Scale: Very Significant (4); Somewhat Significant (3); Not Very Significant (2); Not At All Significant (1)"),
                     br(), br(),
-                    "Table 7.", br(), tableOutput("table7"),
-                    "Scale: Very Satisfied (4); Mostly Satisfied (3); Mostly Dissatisfied (2); Very Dissatisfied (1)",
+                    h5("Table 7."), br(), tableOutput("table7"),
+                    h6("Scale: Very Satisfied (4); Mostly Satisfied (3); Mostly Dissatisfied (2); Very Dissatisfied (1)"),
                     hr(), 
                     ## End of Learning Environment Section
                     
                     ## Start of Career Outcomes Section
-                    h4("Career Outcomes"),
-                    "Table 8.", br(), tableOutput("table8"),
+                    h4("Career Outcomes"), br(),
+                    h5("Table 8."), br(), tableOutput("table8"),
                     hr(),
                     ## End of Career Outcomes Section
                     
                     ## Start of Career Outcomes - Employment Section
-                    h4("Career Outcomes - Employment"),
-                    "Table 9.", br(), tableOutput("table9"),
-                    "Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)", 
+                    h4("Career Outcomes - Employment"), br(),
+                    h5("Table 9."), br(), tableOutput("table9"),
+                    h6("Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"), 
                     br(),
-                    "Note: Averages are based on respondents who indicated they were employed full- or part-time as their primary activity.", 
+                    h6("Note: Averages are based on respondents who indicated they were employed full- or part-time as their primary activity."), 
                     hr()
                     ## End of Career Outcomes - Employment Section
                     )
