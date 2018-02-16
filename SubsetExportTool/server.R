@@ -79,7 +79,7 @@ shinyServer(function(input, output, session) {
                         #shinythemes::themeSelector(),
                         #theme = shinytheme("yeti"),
                         theme = "mystyle.css",
-                        br(), br(),
+                        br(), br(), br(), br(), br(), br(), br(), br(),
                         titlePanel(div(HTML("<b><center>Outcomes Subset Export Tool</b></center>"))), br(), br(),
                         sidebarLayout(
                                  sidebarPanel(
@@ -157,11 +157,11 @@ shinyServer(function(input, output, session) {
         })
         
         output$table7 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 33:42))
+                Table7(datasetInput(), paste0("Q", 33:42))
         })
-        
+
         output$table8 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 105))
+                Table8(datasetInput(), paste0("Q", 105))
         })
         
         output$table9 <- renderTable({
