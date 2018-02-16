@@ -7,6 +7,3 @@ colnames(data) <- questionsIndex$Question
 
 ##Set column types, tidy, etc
 
-
-
-

@@ -1,51 +1,128 @@
 ---
 title: "Outcomes Report"
 author: "Webster University"
-date: "2/4/2018"
+date: "`r Sys.Date()`"
 output: pdf_document
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{multirow}
+  - \usepackage[table]{xcolor}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{colortbl}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage[normalem]{ulem}
 ---
-Table 1:
 ```{r echo=FALSE}
+options(knitr.table.format = "latex")
+options(kableExtra.latex.load_packages = TRUE)
+library(knitr)
+library(kableExtra)
 source("functions.R")
-knitr::kable(Table1(datasetInput()))
 ```
 
-Table 2:
 ```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), c("Q101", "Q102")))
+cap <- "Outcomes Survey Response Rates by Program Level"
+cols <- c("Program Level", "Total Graduates", "Total Respondents", "Response Rate")
+Table1(datasetInput()) %>%
+      kable(digits = 2,
+            caption = cap,
+            col.names = cols) %>%
+      kable_styling(full_width = TRUE) %>%
+      row_spec(0, bold = TRUE)
 ```
 
-Table 3:
 ```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), paste0("Q", 83:90)))
+cap <- "Overall Satisfaction with Webster"
+cols <- c("Please indicate your level of agreement with the following:", 
+          "Overall Avg.", "GRAD Avg.", "UNGD Avg.")
+foot <- "Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"
+TableQ(datasetInput(), c("Q101", "Q102")) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em") %>% 
+      footnote(foot,
+               general_title = "Scale:",
+               footnote_as_chunk = TRUE)
 ```
 
-Table 4:
 ```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), paste0("Q", 71:73)))
+cap <- "Mission Outcomes"
+cols <- c("My Webster experience has enhanced my ability to:", 
+          "Overall Avg.", "GRAD Avg.", "UNGD Avg.")
+foot <- "Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"
+TableQ(datasetInput(), paste0("Q", 83:90)) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em") %>% 
+      footnote(foot,
+               general_title = "Scale:",
+               footnote_as_chunk = TRUE)
 ```
 
-Table 5:
 ```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), paste0("Q", 43:48)))
+cap <- "Learning Environment"
+cols <- c("During my Webster experience:", 
+          "Overall Avg.", "GRAD Avg.", "UNGD Avg.")
+foot <- "Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"
+TableQ(datasetInput(), paste0("Q", 71:73)) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em") %>% 
+      footnote(foot,
+               general_title = "Scale:",
+               footnote_as_chunk = TRUE)
 ```
 
-Table 6:
 ```{r echo=FALSE}
-knitr::kable(Table6(datasetInput(), paste0("Q", 74:82)))
+cap <- "Learning Environment"
+cols <- c("In my program of study:", 
+          "Overall Avg.", "GRAD Avg.", "UNGD Avg.")
+foot <- "Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"
+TableQ(datasetInput(), paste0("Q", 43:48)) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em") %>% 
+      footnote(foot,
+               general_title = "Scale:",
+               footnote_as_chunk = TRUE)
 ```
 
-Table 7:
 ```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), paste0("Q", 33:42)))
-```
+cap <- "Learning Environment (Undergraduates Only)"
+cols <- c("Please rate the impact of the following on your learning and/or development", 
+          "UNGD Avg.", "# of Respondents in Avg")
+foot <- "Very Significant (4); Somewhat Significant (3); Not Very Significant (2); Not At All Significant (1)"
 
-Table 8:
-```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), paste0("Q", 105)))
-```
-
-Table 9:
-```{r echo=FALSE}
-knitr::kable(TableQ(datasetInput(), paste0("Q", 108:109)))
+Table6(datasetInput(), paste0("Q", 74:82)) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em") %>% 
+      footnote(foot,
+               general_title = "Scale:",
+               footnote_as_chunk = TRUE)
 ```

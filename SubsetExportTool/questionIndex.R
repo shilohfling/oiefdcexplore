@@ -13,6 +13,3 @@ questionsIndex <- x
 remove(x)
 
 subqCategories <- c("SOE Outcomes", "SOC Enhanced Ability", "Student Development", "Counseling")
-
-
-

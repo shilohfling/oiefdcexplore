@@ -77,6 +77,10 @@ shinyServer(function(input, output, session) {
         output$mainbody <- renderUI({
                 fluidPage(
                         #shinythemes::themeSelector(),
+                        theme = shinytheme("yeti"),
+                        #theme = "mystyle.css",
+                        titlePanel("Outcomes Subset Export Tool"),
+                        
                         #theme = shinytheme("yeti"),
                         theme = "mystyle.css",
                         br(), br(),

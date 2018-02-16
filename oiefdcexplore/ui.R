@@ -9,17 +9,21 @@ shinyUI(fluidPage(
                 sidebarPanel(
                         selectInput(inputId = "campus",
                                     label = "Campus(es):",
-                                    choices = c("All", campus_choices)),
+                                    choices = c("All", campus_choices),
+                                    multiple = TRUE),
                         selectInput(inputId = "dept",
-                                    label = "Department(s):",
-                                    choices = c("All", dept_choices)),
+                                    label = "Department(s):", 
+                                    choices = c("All", dept_choices),
+                                    multiple = TRUE),
                         selectInput(inputId = "major",
                                     label = "Major(s):",
-                                    choices = c("All",major_choices))
+                                    choices = c("All",major_choices),
+                                    multiple = TRUE),
+                        downloadButton('downloadReport')
                 ),
                 mainPanel(
-                        plotOutput("Data Plot"),
-                        tableOutput("view")
+                        uiOutput("table")
+                        )
                 )
         )
-))
+)

@@ -50,3 +50,4 @@ Table7 <- function(x, questions) {
                 summarise() %>% ungroup() %>%
                 spread(Q, X.Program.Level, F.Program.Level.Avg, F.Respondents.in.Avg)
 }
+
