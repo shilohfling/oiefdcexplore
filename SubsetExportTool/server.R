@@ -77,14 +77,10 @@ shinyServer(function(input, output, session) {
         output$mainbody <- renderUI({
                 fluidPage(
                         #shinythemes::themeSelector(),
-                        theme = shinytheme("yeti"),
-                        #theme = "mystyle.css",
-                        titlePanel("Outcomes Subset Export Tool"),
-                        
                         #theme = shinytheme("yeti"),
                         theme = "mystyle.css",
                         br(), br(),
-                        titlePanel(div(HTML("<b><center>Outcomes Subset Export Tool</b>"))), br(), br(),
+                        titlePanel(div(HTML("<b><center>Outcomes Subset Export Tool</b></center>"))), br(), br(),
                         sidebarLayout(
                                  sidebarPanel(
                                          h3("Please select data: "),
