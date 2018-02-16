@@ -1,4 +1,92 @@
-/* 
-something is wrong and this file is not currently synced correctly.
-will push code on Friday.
+body {
+        background-image: url("https://instructure-uploads.s3.amazonaws.com/account_180000000085240/attachments/53502025/CanvasWebsterLogo_login.svg?AWSAccessKeyId=AKIAJFNFXH2V2O7RPCAA&Expires=1936742155&Signature=V0WeM7MZPu0twNMpfUSMzMqLe7Q%3D&response-cache-control=Cache-Control%3Amax-age%3D473364000.0%2C%20public&response-expires=473364000.0");
+        background-size: 25%;        
+        background-repeat: no-repeat;
+        height: 100vh;
+        background-position: bottom left;
+        background-color: #004990;
+        /*
+        background-color: #ffffff;
+        color: #B7B9BC;
+        */
+        color: #000000;       
+        font-family: 'Georgia', sans-serif;
+}
+
+h2 {
+        font-family: 'Georgia', sans-serif;
+        font-size: 30px;
+        color: #FFFFFF;
+        display: inline;
+}
+
+h3 {
+        font-family: 'Georgia', sans-serif;
+        font-size: 25px;
+        color: #004990;
+        display: inline;
+}
+
+h4 {
+        font-family: 'Georgia', sans-serif;
+        font-size: 20px;
+        color: #000000;
+        display: inline;
+}
+
+h5 {
+        font-family: 'Georgia', sans-serif;
+        font-size: 15px;
+        color: #000000;
+        display: inline;
+}
+
+h6 {
+        font-family: 'Georgia', sans-serif;
+        font-size: 10px;
+        color: #000000;
+        display: inline;
+}
+
+th {
+    background-color: #f9ba53;
+    color: #004990;
+}
+
+.myTitle {
+        margin-top: 100px;
+        margin-bottom: 50px;
+        text-align: center;
+}
+
+/*
+WORK SPACE
+
+.myContent {
+        background-color: #FFFFFF;
+        background-color: rgba(0, 73, 144, .5);
+        padding-top: 20px;
+        padding-right: 20px;
+        padding-left: 20px;
+        max-width: 1000px;
+        margin: auto;
+}
+
+.tabs .content {
+    z-index: 0;
+    overflow: hidden;
+    width: 600px;
+    position: absolute;
+    top: 27px;
+    left: 0;
+    background: #FFFFFF;
+    color: #DFDFDF;
+    
+    opacity:0;
+    transition: opacity 400ms ease-out;
+}
+
 */
+
+
+
