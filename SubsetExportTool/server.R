@@ -1,3 +1,10 @@
+##################################################
+# This dashboard prototype is for subsetting
+# data and creating customized reports through a 
+# friendly Shiny based GUI.
+##################################################
+## Load packages
+## Must already be installed in RStudio
 library(shiny)
 library(shinythemes)
 library(DT)
@@ -10,10 +17,13 @@ library(rmarkdown)
 library(tidyr)
 library(openxlsx)
 
+##################################################
+## Load sources
 source("functions.R")
 source("questionIndex.R")
 source("loadData.R")
 
+##################################################
 ##Create subset choice vectors
 campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")
 dept_choices <- unique(sort(data$X.Dept))
@@ -28,9 +38,8 @@ question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
 question_shortname_column_index <- questionsIndex$Question
 names(question_shortname_column_index) <- questionsIndex$Shortname
 
-
-
-
+##################################################
+## Beginning of server where most of the magic happens
 
 shinyServer(function(input, output, session) {
 
@@ -57,27 +66,12 @@ shinyServer(function(input, output, session) {
                         DTX <- DTX[DTX$X.Campus1 %in% input$campus, ]
                 }
                 
-                ##Exract the questions and join back the ones select
-                #DTXquestions <- DTX %>% select(starts_with("Q"))
-                #DTX <- DTX %>% select(-starts_with("Q"))
-                
-                #DTXquestions <- DTXquestions[, question_shortname_column_index[input$questions]]
-                
-                ##If the length is one, the vector is returned and the name of the object is the colname
-                ##This isn't elegant, but lets us control the colname of a single question
-                #if(length(input$questions) == 1) {
-                #      DTX <- cbind(DTX, "Q" = DTXquestions)
-                #} else {
-                #      DTX <- cbind(DTX, DTXquestions)
-                #}
-                
                 DTX
         })
         
         output$mainbody <- renderUI({
                 fluidPage(
-                        #shinythemes::themeSelector(),
-                        #theme = shinytheme("yeti"),
+                        ## Custom Webster branded theme
                         theme = "mystyle.css",
                         br(), br(), br(), br(), br(), br(), br(), br(),
                         titlePanel(div(HTML("<b><center>Outcomes Subset Export Tool</b></center>"))), br(), br(),
@@ -107,12 +101,12 @@ shinyServer(function(input, output, session) {
                                  ),
                                  
                                 mainPanel(
-                                ## View the subsetted options into two tabs - Table and Plot
+                                ## View the subsetted options into two tabs - Table and Preview report
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Data table", class = "one",
                                                      div(HTML("<h2><b><center>AY 2016-2017 Responses</center></b></h2>")),
                                                      DT::dataTableOutput("table")),
-                                            tabPanel("Report", class = "one",
+                                            tabPanel("Preview Report", class = "one",
                                                      div(HTML("<h2><b><center>AY 2016-2017 Responses</center></b></h2>")),
                                                      uiOutput("report"))
                                             )
@@ -121,53 +115,14 @@ shinyServer(function(input, output, session) {
                 )
         })
         
+        ##### Design for first tab (the data table) #####
         output$table <- DT::renderDataTable({
                 DT::datatable(datasetInput(), select = "none",
                               options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 5))
         })
         
-        output$plot <- renderPlot({
-              if(nrow(datasetInput()) > 1 && length(input$questions) >= 1) {
-                    testQ(datasetInput())
-              }
-        })
         
-        output$table1 <- renderTable({
-                Table1(datasetInput())
-        })
-
-        output$table2 <- renderTable({
-                TableQ(datasetInput(), c("Q101", "Q102"))
-        })
-        
-        output$table3 <- renderTable({
-              TableQ(datasetInput(), paste0("Q", 83:90))
-        })
-        
-        output$table4 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 71:73))
-        })
-        
-        output$table5 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 43:48))
-        })
-        
-        output$table6 <- renderTable({
-                Table6(datasetInput(), paste0("Q", 74:82))
-        })
-        
-        output$table7 <- renderTable({
-                Table7(datasetInput(), paste0("Q", 33:42))
-        })
-
-        output$table8 <- renderTable({
-                Table8(datasetInput(), paste0("Q", 105))
-        })
-        
-        output$table9 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 108:109))
-        })
-        
+        ##### Design for second tab (the report) #####
         output$report <- renderUI({
               tagList(
                     ## Suppress warning messages  
@@ -228,6 +183,51 @@ shinyServer(function(input, output, session) {
                     )
         })
         
+        output$plot <- renderPlot({
+              if(nrow(datasetInput()) > 1 && length(input$questions) >= 1) {
+                    testQ(datasetInput())
+              }
+        })
+        
+        ##### Table designs #####
+        output$table1 <- renderTable({
+                Table1(datasetInput())
+        })
+
+        output$table2 <- renderTable({
+                TableQ(datasetInput(), c("Q101", "Q102"))
+        })
+        
+        output$table3 <- renderTable({
+              TableQ(datasetInput(), paste0("Q", 83:90))
+        })
+        
+        output$table4 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 71:73))
+        })
+        
+        output$table5 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 43:48))
+        })
+        
+        output$table6 <- renderTable({
+                Table6(datasetInput(), paste0("Q", 74:82))
+        })
+        
+        output$table7 <- renderTable({
+                Table7(datasetInput(), paste0("Q", 33:42))
+        })
+
+        output$table8 <- renderTable({
+                Table8(datasetInput(), paste0("Q", 105))
+        })
+        
+        output$table9 <- renderTable({
+                TableQ(datasetInput(), paste0("Q", 108:109))
+        })
+        
+        ##### Download options #####
+        
         output$downloadReport <- downloadHandler(
               filename = "myreportpdf.pdf",
               content = function(file) {
@@ -244,5 +244,6 @@ shinyServer(function(input, output, session) {
         )
 })
 
-
+## End of server
+##################################################
 

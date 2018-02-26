@@ -1,4 +1,9 @@
-##Move this section to own file to source
+##################################################
+# This dashboard prototype is for subsetting
+# data and creating customized reports through a 
+# friendly Shiny based GUI.
+##################################################
+
 ##Load the data object from disk
 data <- readRDS("sources/data.RDS")
 
