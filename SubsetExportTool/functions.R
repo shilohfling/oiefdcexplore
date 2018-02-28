@@ -36,7 +36,7 @@ Table1 <- function(x) {
             rename(F.Total.Respondents = n) %>%
             add_count(X.Program.Level) %>%
             rename(F.Total.Graduates = n) %>%
-            mutate(F.Response.Rate = F.Total.Respondents/F.Total.Graduates) %>%
+            mutate(F.Response.Rate = (F.Total.Respondents/F.Total.Graduates) *100) %>%
             group_by(X.Program.Level, X.Data.Set, F.Total.Graduates, 
                      F.Total.Respondents, F.Response.Rate) %>%
             summarise() %>% ungroup() %>%
@@ -79,5 +79,11 @@ Table7 <- function(x, questions) {
 }
 
 Table8 <- function(x, questions) {
-      x %>% select(X.Program.Level, questions)
+      x <- x %>% select(questions, X.Program.Level) %>%
+              levelQuestionAvgFreq(questions) %>%
+              add_count(Q) %>%
+              rename(F.Respondents.in.Avg = n) %>%
+              add_count(X.Program.Level) %>%
+              rename(F.Total.Respondents = n) %>%
+              mutate(F.Percent.Overall.Total = (F.Respondents.in.Avg / F.Total.Respondents) *100)
 }
