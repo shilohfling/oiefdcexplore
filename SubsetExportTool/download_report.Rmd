@@ -147,6 +147,8 @@ Table7(datasetInput(), paste0("Q", 33:42)) %>%
                footnote_as_chunk = TRUE)
 ```
 
+
+
 ```{r echo=FALSE}
 cap <- "Career Outcomes"
 cols <- c("What is your primary activity?", 
@@ -163,6 +165,8 @@ Table8(datasetInput(), paste0("Q", 105)) %>%
       row_spec(0, bold = TRUE) %>%
       column_spec(1, "30em")
 ```
+
+
 
 ```{r echo=FALSE}
 cap <- "Career Outcomes - Employment"

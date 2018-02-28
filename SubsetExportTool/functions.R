@@ -78,12 +78,33 @@ Table7 <- function(x, questions) {
         return(z)
 }
 
-Table8 <- function(x, questions) {
-        x <- x %>% select(questions, X.Program.Level) %>%
-                levelQuestionAvgFreq(questions) %>%
-                add_count(Q) %>%
-                rename(F.Respondents.in.Avg = n) %>%
-                add_count(X.Program.Level) %>%
-                rename(F.Total.Respondents = n) %>%
-                mutate(F.Percent.Overall.Total = (F.Respondents.in.Avg / F.Total.Respondents) *100)
+Table8 <- function(x, question) {
+        x <- x %>% select(question, X.Program.Level) %>%
+              rename_("V" = question) %>%
+              na.omit() %>%
+              mutate(F.Overall.Count = nrow(.)) %>% 
+              add_count(V) %>%
+              rename(F.Responses.Question = n) %>% 
+              add_count(V, X.Program.Level) %>%
+              rename(F.Responses.Question.Program = n) %>% 
+              add_count(X.Program.Level) %>%
+              rename(F.Responses.Program = n) %>%
+              mutate(F.Overall.Avg = F.Responses.Question/F.Overall.Count) %>% 
+              mutate(F.Program.Avg = F.Responses.Question.Program/F.Responses.Program) %>% 
+              group_by(V, X.Program.Level, F.Overall.Count, F.Overall.Avg, F.Responses.Question.Program, F.Program.Avg) %>% 
+              summarise() %>% ungroup
+        
+        y <- x %>% select(-F.Responses.Question.Program) %>% 
+              spread(X.Program.Level, F.Program.Avg) %>% 
+              rename(F.GRAD.Program.Level.Avg = GRAD) %>% 
+              rename(F.UNDG.Program.Level.Avg = UNDG)
+        
+        z <- x %>% select(-F.Program.Avg) %>% 
+              spread(X.Program.Level, F.Responses.Question.Program) %>% 
+              rename(F.GRAD.Program.Q.Respondents.in.Avg = GRAD) %>% 
+              rename(F.UNDG.Program.Q.Respondents.in.Avg = UNDG) %>% 
+              left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Avg"))
+        
+        return(z)
+              
 }
