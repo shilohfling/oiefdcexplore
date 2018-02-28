@@ -126,10 +126,10 @@ shinyServer(function(input, output, session) {
         output$report <- renderUI({
               tagList(
                     ## Suppress warning messages  
-                    # tags$style(type="text/css",
-                    #              ".shiny-output-error { visibility: hidden; }",
-                    #              ".shiny-output-error:before { visibility: hidden; }"
-                    # ),
+                    tags$style(type="text/css",
+                                 ".shiny-output-error { visibility: hidden; }",
+                                 ".shiny-output-error:before { visibility: hidden; }"
+                    ),
                     h4("Response Rates"), br(),
                     h5("Table 1. Outcomes Survey Response Rates by Program Level"), 
                     br(), 
@@ -178,6 +178,12 @@ shinyServer(function(input, output, session) {
                     h6("Scale: Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"), 
                     br(),
                     h6("Note: Averages are based on respondents who indicated they were employed full- or part-time as their primary activity."), 
+                    br(), br(),
+                    h5("Table 10."), br(), tableOutput("table10"), br(),
+                    h6("Note: Percentages are based on respondents who indicated they were employed full- or part-time as their primary activity."),
+                    br(), br(),
+                    h5("Table 11."), br(), tableOutput("table11"), br(),
+                    h6("Note: Percentages are based on respondents who indicated they were employed full- or part-time as their primary activity."),
                     hr()
                     ## End of Career Outcomes - Employment Section
                     )
@@ -219,11 +225,19 @@ shinyServer(function(input, output, session) {
         })
 
         output$table8 <- renderTable({
-                Table8(datasetInput(), paste0("Q", 105))
+                Table8(datasetInput(), paste0("Q", 19))
         })
         
         output$table9 <- renderTable({
                 TableQ(datasetInput(), paste0("Q", 108:109))
+        })
+        
+        output$table10 <- renderTable({
+                Table8(datasetInput(), paste0("Q", 111))
+        })
+        
+        output$table11 <- renderTable({
+                Table8(datasetInput(), paste0("Q", 115))
         })
         
         ##### Download options #####

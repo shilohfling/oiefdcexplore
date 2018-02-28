@@ -156,7 +156,7 @@ cols <- c("What is your primary activity?",
           "# of GRAD respondents", "% of GRAD Total",
           "# of UNDG Respondents", "% of UNDG Total")
 
-Table8(datasetInput(), paste0("Q", 105)) %>%
+Table8(datasetInput(), paste0("Q", 19)) %>%
       kable(digits = 2,
             col.names = cols,
             caption = cap,
@@ -188,4 +188,38 @@ TableQ(datasetInput(), paste0("Q", 108:109)) %>%
         footnote(foot2,
                general_title = "Note:",
                footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes"
+cols <- c("What is your primary activity?", 
+          "# of Overall Respondents", "% of Overall Total",
+          "# of GRAD respondents", "% of GRAD Total",
+          "# of UNDG Respondents", "% of UNDG Total")
+
+Table8(datasetInput(), paste0("Q", 111)) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em")
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes"
+cols <- c("What is your primary activity?", 
+          "# of Overall Respondents", "% of Overall Total",
+          "# of GRAD respondents", "% of GRAD Total",
+          "# of UNDG Respondents", "% of UNDG Total")
+
+Table8(datasetInput(), paste0("Q", 115)) %>%
+      kable(digits = 2,
+            col.names = cols,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "30em")
 ```

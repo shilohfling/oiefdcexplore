@@ -82,6 +82,7 @@ Table8 <- function(x, question) {
         x <- x %>% select(question, X.Program.Level) %>%
               rename_("V" = question) %>%
               na.omit() %>%
+              filter(V != "No Response") %>%
               mutate(F.Overall.Count = nrow(.)) %>% 
               add_count(V) %>%
               rename(F.Responses.Question = n) %>% 
@@ -101,10 +102,10 @@ Table8 <- function(x, question) {
         
         z <- x %>% select(-F.Program.Avg) %>% 
               spread(X.Program.Level, F.Responses.Question.Program) %>% 
+              #gather(F.Overall.Count) %>%
               rename(F.GRAD.Program.Q.Respondents.in.Avg = GRAD) %>% 
               rename(F.UNDG.Program.Q.Respondents.in.Avg = UNDG) %>% 
               left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Avg"))
         
         return(z)
-              
 }
