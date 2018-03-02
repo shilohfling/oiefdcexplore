@@ -73,8 +73,11 @@ shinyServer(function(input, output, session) {
                 fluidPage(
                         ## Custom Webster branded theme
                         theme = "mystyle.css",
-                        br(), br(), br(), br(), br(), br(), br(), br(),
-                        titlePanel(div(HTML("<b><center>Outcomes Subset Export Tool</b></center>"))), br(), br(),
+                        img(src="DSC-1256.jpg", alt = "Webster Hall by Inocencio Boc"),
+                        br(), br(),
+                        titlePanel("Outcomes Subset Export Tool"),
+                        br(), br(),
+                        
                         sidebarLayout(
                                  sidebarPanel(
                                          h3("Please select data: "),
@@ -97,17 +100,19 @@ shinyServer(function(input, output, session) {
                                                      multiple = TRUE),
                                          hr(),
                                          downloadButton("downloadData", h5("Download Data")),
-                                         downloadButton("downloadReport", h5("Download Report"))
+                                         downloadButton("downloadReport", h5("Download Report")),
+                                         br(), br(),
+                                         img(src="401px-Webster_University_Logo.svg.png", alt = "Webster University Logo")
                                  ),
                                  
                                 mainPanel(
                                 ## View the subsetted options into two tabs - Table and Preview report
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Data table", class = "one",
-                                                     div(HTML("<h2><b><center>AY 2016-2017 Responses</center></b></h2>")),
+                                                     div(HTML("<br><h2><b><center>AY 2016-2017 Responses</center></b></h2></br>")),
                                                      DT::dataTableOutput("table")),
                                             tabPanel("Preview Report", class = "one",
-                                                     div(HTML("<h2><b><center>AY 2016-2017 Responses</center></b></h2>")),
+                                                     div(HTML("<br><h2><b><center>AY 2016-2017 Responses</center></b></h2></br>")),
                                                      uiOutput("report"))
                                             )
                                 )
@@ -201,19 +206,19 @@ shinyServer(function(input, output, session) {
         })
 
         output$table2 <- renderTable({
-                TableQ(datasetInput(), c("Q101", "Q102"))
+                TableA(datasetInput(), paste0("Q", 101:102))
         })
         
         output$table3 <- renderTable({
-              TableQ(datasetInput(), paste0("Q", 83:90))
+              TableA(datasetInput(), paste0("Q", 83:90))
         })
         
         output$table4 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 71:73))
+                TableA(datasetInput(), paste0("Q", 71:73))
         })
         
         output$table5 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 43:48))
+                TableA(datasetInput(), paste0("Q", 43:48))
         })
         
         output$table6 <- renderTable({
@@ -225,19 +230,19 @@ shinyServer(function(input, output, session) {
         })
 
         output$table8 <- renderTable({
-                Table8(datasetInput(), paste0("Q", 19))
+                TableB(datasetInput(), paste0("Q", 19))
         })
         
         output$table9 <- renderTable({
-                TableQ(datasetInput(), paste0("Q", 108:109))
+                TableA(datasetInput(), paste0("Q", 108:109))
         })
         
         output$table10 <- renderTable({
-                Table8(datasetInput(), paste0("Q", 111))
+                TableB(datasetInput(), paste0("Q", 111))
         })
         
         output$table11 <- renderTable({
-                Table8(datasetInput(), paste0("Q", 115))
+                TableB(datasetInput(), paste0("Q", 115))
         })
         
         ##### Download options #####
