@@ -17,19 +17,33 @@ levelQuestionAvgFreq <- function(x, questions) {
 }
 
 ##### General table functions, should be flexible enough to apply to most tables #####
-TableA <- function(x, questions) {
+TableA <- function(x, questions, qindex) {
         
         if(nrow(x) < 10) {
-                return("Selected sample is less than 10. Please select more data.")
+                
         }
+                return("Selected sample is less than 10. Please select more data.")
         
-        x %>% levelQuestionAvgFreq(questions) %>% 
+        x <- x %>% levelQuestionAvgFreq(questions) %>% 
                 group_by(Q, X.Program.Level, F.Overall.Avg, F.Program.Level.Avg) %>% 
                 summarise() %>% ungroup() %>% 
-                spread(X.Program.Level, F.Program.Level.Avg)
+                spread(X.Program.Level, F.Program.Level.Avg) 
+        
+        x <- x %>% left_join(questionsIndex, by = c("Q" = "Question"))
+        
+        qitem <- x$QA[[1]]
+        
+        x <- x %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
+                rename(Question = QB) %>% 
+                select(-Q) %>% 
+                select(Question, everything())
+        
+        names(x)[names(x) == "Question"] <- qitem
+        
+        return(x)
 }
 
-TableB <- function(x, question) {
+TableB <- function(x, question, qindex) {
         
         if(nrow(x) < 10) {
                 return("Selected sample is less than 10. Please select more data.")
@@ -64,6 +78,17 @@ TableB <- function(x, question) {
               rename(F.UNDG.Program.Q.Respondents.in.Avg = UNDG) %>% 
               left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Avg"))
         
+        # xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
+        # 
+        # qitem <- xx$QA[[1]]
+        # xx <- z %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
+        #          rename(Question = QB) %>% 
+        #          select(-Q) %>% 
+        #          select(Question, everything())
+        #  
+        #  names(xx)[names(xx) == "Question"] <- qitem
+        #  
+        #  return(xx)
         return(z)
 }
 
@@ -85,9 +110,11 @@ Table1 <- function(x) {
                 summarise() %>% ungroup() %>%
                 filter(X.Data.Set == "Responder")  %>%
                 select(-X.Data.Set)
+        
+        return(x)
 }
 
-Table6 <- function(x, questions) {
+Table6 <- function(x, questions, qindex) {
         
         if(nrow(x) < 10) {
                 return("Selected sample is less than 10. Please select more data.")
@@ -99,9 +126,22 @@ Table6 <- function(x, questions) {
                 group_by(Q, X.Program.Level, F.Program.Level.Avg, F.Respondents.in.Avg) %>% 
                 summarise() %>% ungroup() %>% 
                 select(-X.Program.Level)
+        
+        xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
+        
+        qitem <- x$QA[[1]]
+        
+        xx <- xx %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
+                rename(Question = QB) %>% 
+                select(-Q) %>% 
+                select(Question, everything())
+        
+        names(xx)[names(xx) == "Question"] <- qitem
+        
+        return(xx)
 }
 
-Table7 <- function(x, questions) {
+Table7 <- function(x, questions, qindex) {
         
         if(nrow(x) < 10) {
                 return("Selected sample is less than 10. Please select more data.")
@@ -128,6 +168,17 @@ Table7 <- function(x, questions) {
                 rename(F.UNDG.Program.Level.Avg = UNDG) %>% 
                 left_join(y, by = c("Q", "F.Overall.Avg", "F.Respondents.in.Avg"))
         
-        return(z)
+        xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
+        
+        qitem <- x$QA[[1]]
+        
+        xx <- xx %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
+                rename(Question = QB) %>% 
+                select(-Q) %>% 
+                select(Question, everything())
+        
+        names(xx)[names(xx) == "Question"] <- qitem
+        
+        return(xx)
 }
 

@@ -206,43 +206,43 @@ shinyServer(function(input, output, session) {
         })
 
         output$table2 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 101:102))
+                TableA(datasetInput(), paste0("Q", 101:102), questionsIndex)
         })
         
         output$table3 <- renderTable({
-              TableA(datasetInput(), paste0("Q", 83:90))
+              TableA(datasetInput(), paste0("Q", 83:90), questionsIndex)
         })
         
         output$table4 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 71:73))
+                TableA(datasetInput(), paste0("Q", 71:73), questionsIndex)
         })
         
         output$table5 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 43:48))
+                TableA(datasetInput(), paste0("Q", 43:48), questionsIndex)
         })
         
         output$table6 <- renderTable({
-                Table6(datasetInput(), paste0("Q", 74:82))
+                Table6(datasetInput(), paste0("Q", 74:82), questionsIndex)
         })
         
         output$table7 <- renderTable({
-                Table7(datasetInput(), paste0("Q", 33:42))
+                Table7(datasetInput(), paste0("Q", 33:42), questionsIndex)
         })
 
         output$table8 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 19))
+                TableB(datasetInput(), paste0("Q", 19), questionsIndex)
         })
         
         output$table9 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 108:109))
+                TableA(datasetInput(), paste0("Q", 108:109), questionsIndex)
         })
         
         output$table10 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 111))
+                TableB(datasetInput(), paste0("Q", 111), questionsIndex)
         })
         
         output$table11 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 115))
+                TableB(datasetInput(), paste0("Q", 115), questionsIndex)
         })
         
         ##### Download options #####
