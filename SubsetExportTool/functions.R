@@ -20,9 +20,8 @@ levelQuestionAvgFreq <- function(x, questions) {
 TableA <- function(x, questions, qindex) {
         
         if(nrow(x) < 10) {
-                
-        }
                 return("Selected sample is less than 10. Please select more data.")
+        }
         
         x <- x %>% levelQuestionAvgFreq(questions) %>% 
                 group_by(Q, X.Program.Level, F.Overall.Avg, F.Program.Level.Avg) %>% 
@@ -43,7 +42,7 @@ TableA <- function(x, questions, qindex) {
         return(x)
 }
 
-TableB <- function(x, question, qindex) {
+TableB <- function(x, question) {
         
         if(nrow(x) < 10) {
                 return("Selected sample is less than 10. Please select more data.")
@@ -73,26 +72,14 @@ TableB <- function(x, question, qindex) {
         
         z <- x %>% select(-F.Program.Avg) %>% 
               spread(X.Program.Level, F.Responses.Question.Program) %>% 
-              #gather(F.Overall.Count) %>%
               rename(F.GRAD.Program.Q.Respondents.in.Avg = GRAD) %>% 
               rename(F.UNDG.Program.Q.Respondents.in.Avg = UNDG) %>% 
               left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Avg"))
-        
-        # xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
-        # 
-        # qitem <- xx$QA[[1]]
-        # xx <- z %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
-        #          rename(Question = QB) %>% 
-        #          select(-Q) %>% 
-        #          select(Question, everything())
-        #  
-        #  names(xx)[names(xx) == "Question"] <- qitem
-        #  
-        #  return(xx)
+     
         return(z)
 }
 
-##### Customized tables for reporting tables that don't fit into TableQ #####
+##### Customized tables for reporting tables that don't fit into TableA or TableB #####
 Table1 <- function(x) {
 
         if(nrow(x) < 10) {
@@ -110,8 +97,6 @@ Table1 <- function(x) {
                 summarise() %>% ungroup() %>%
                 filter(X.Data.Set == "Responder")  %>%
                 select(-X.Data.Set)
-        
-        return(x)
 }
 
 Table6 <- function(x, questions, qindex) {
@@ -127,17 +112,17 @@ Table6 <- function(x, questions, qindex) {
                 summarise() %>% ungroup() %>% 
                 select(-X.Program.Level)
         
-        xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
+        xx <- x %>% left_join(qindex, by = c("Q" = "Question"))
         
         qitem <- x$QA[[1]]
-        
-        xx <- xx %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
-                rename(Question = QB) %>% 
-                select(-Q) %>% 
+         
+        xx <- xx %>% select(-c(Category, Shortname, Qualtrics, QA)) %>%
+                rename(Question = QB) %>%
+                select(-Q) %>%
                 select(Question, everything())
-        
+
         names(xx)[names(xx) == "Question"] <- qitem
-        
+
         return(xx)
 }
 
@@ -168,17 +153,17 @@ Table7 <- function(x, questions, qindex) {
                 rename(F.UNDG.Program.Level.Avg = UNDG) %>% 
                 left_join(y, by = c("Q", "F.Overall.Avg", "F.Respondents.in.Avg"))
         
-        xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
-        
-        qitem <- x$QA[[1]]
-        
-        xx <- xx %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
-                rename(Question = QB) %>% 
-                select(-Q) %>% 
-                select(Question, everything())
-        
-        names(xx)[names(xx) == "Question"] <- qitem
-        
-        return(xx)
+        # xx <- z %>% left_join(questionsIndex, by = c("Q" = "Question"))
+        # 
+        # qitem <- x$QA[[1]]
+        # 
+        # xx <- xx %>% select(-c(Category, Shortname, Qualtrics, QA)) %>% 
+        #         rename(Question = QB) %>% 
+        #         select(-Q) %>% 
+        #         select(Question, everything())
+        # 
+        # names(xx)[names(xx) == "Question"] <- qitem
+        # 
+        # return(xx)
 }
 

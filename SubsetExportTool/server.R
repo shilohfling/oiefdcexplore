@@ -210,7 +210,7 @@ shinyServer(function(input, output, session) {
         })
         
         output$table3 <- renderTable({
-              TableA(datasetInput(), paste0("Q", 83:90), questionsIndex)
+                TableA(datasetInput(), paste0("Q", 83:90), questionsIndex)
         })
         
         output$table4 <- renderTable({
@@ -230,7 +230,7 @@ shinyServer(function(input, output, session) {
         })
 
         output$table8 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 19), questionsIndex)
+                TableB(datasetInput(), paste0("Q", 19))
         })
         
         output$table9 <- renderTable({
@@ -238,11 +238,11 @@ shinyServer(function(input, output, session) {
         })
         
         output$table10 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 111), questionsIndex)
+                TableB(datasetInput(), paste0("Q", 111))
         })
         
         output$table11 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 115), questionsIndex)
+                TableB(datasetInput(), paste0("Q", 115))
         })
         
         ##### Download options #####
