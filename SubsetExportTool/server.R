@@ -122,8 +122,11 @@ shinyServer(function(input, output, session) {
         
         ##### Design for first tab (the data table) #####
         output$table <- DT::renderDataTable({
-                DT::datatable(datasetInput(), select = "none",
-                              options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 5))
+                DTpreview <- PreviewDT(datasetInput())
+                
+                DT::datatable(DTpreview, select = "none",
+                              options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 5),
+                              rownames = FALSE)
         })
         
         
@@ -230,7 +233,7 @@ shinyServer(function(input, output, session) {
         })
 
         output$table8 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 19))
+                TableB(datasetInput(), paste0("Q", 19), questionsIndex)
         })
         
         output$table9 <- renderTable({
@@ -238,11 +241,11 @@ shinyServer(function(input, output, session) {
         })
         
         output$table10 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 111))
+                TableB(datasetInput(), paste0("Q", 111), questionsIndex)
         })
         
         output$table11 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 115))
+                TableB(datasetInput(), paste0("Q", 115), questionsIndex)
         })
         
         ##### Download options #####
