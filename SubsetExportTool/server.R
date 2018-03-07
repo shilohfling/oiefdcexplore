@@ -122,7 +122,7 @@ shinyServer(function(input, output, session) {
         
         ##### Design for first tab (the data table) #####
         output$table <- DT::renderDataTable({
-                DTpreview <- PreviewDT(datasetInput())
+                DTpreview <- PreviewDT(datasetInput(), cnm)
                 
                 DT::datatable(DTpreview, select = "none",
                               options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 5),
@@ -205,47 +205,47 @@ shinyServer(function(input, output, session) {
         
         ##### Table designs #####
         output$table1 <- renderTable({
-                Table1(datasetInput())
+                Table1(datasetInput(), cnm)
         })
 
         output$table2 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 101:102), questionsIndex)
+                TableA(datasetInput(), paste0("Q", 101:102), questionsIndex, cnm)
         })
         
         output$table3 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 83:90), questionsIndex)
+                TableA(datasetInput(), paste0("Q", 83:90), questionsIndex, cnm)
         })
         
         output$table4 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 71:73), questionsIndex)
+                TableA(datasetInput(), paste0("Q", 71:73), questionsIndex, cnm)
         })
         
         output$table5 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 43:48), questionsIndex)
+                TableA(datasetInput(), paste0("Q", 43:48), questionsIndex, cnm)
         })
         
         output$table6 <- renderTable({
-                Table6(datasetInput(), paste0("Q", 74:82), questionsIndex)
+                Table6(datasetInput(), paste0("Q", 74:82), questionsIndex, cnm)
         })
         
         output$table7 <- renderTable({
-                Table7(datasetInput(), paste0("Q", 33:42), questionsIndex)
+                Table7(datasetInput(), paste0("Q", 33:42), questionsIndex, cnm)
         })
 
         output$table8 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 19), questionsIndex)
+                TableB(datasetInput(), paste0("Q", 19), questionsIndex, cnm)
         })
         
         output$table9 <- renderTable({
-                TableA(datasetInput(), paste0("Q", 108:109), questionsIndex)
+                TableA(datasetInput(), paste0("Q", 108:109), questionsIndex, cnm)
         })
         
         output$table10 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 111), questionsIndex)
+                TableB(datasetInput(), paste0("Q", 111), questionsIndex, cnm)
         })
         
         output$table11 <- renderTable({
-                TableB(datasetInput(), paste0("Q", 115), questionsIndex)
+                TableB(datasetInput(), paste0("Q", 115), questionsIndex, cnm)
         })
         
         ##### Download options #####

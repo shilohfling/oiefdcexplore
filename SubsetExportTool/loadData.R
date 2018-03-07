@@ -11,4 +11,26 @@ data <- readRDS("sources/data.RDS")
 colnames(data) <- questionsIndex$Question
 
 ##Set column types, tidy, etc
+#data$X.Program.Level <- as.factor(data$X.Program.Level)
 
+##Create misc. objects
+cnm <- c("X.Program.Level" = "Program Level",
+        "F.Total.Graduates" = "Total Graduates",
+        "F.Total.Respondents" = "Total Respondents",
+        "F.Response.Rate" = "Response Rate",
+        "F.Overall.Avg" = "Overall Average",
+        "F.UNDG.Avg" = "UNDG Average",
+        "F.Program.Level.Avg" = "Program Level Average",
+        "F.Respondents.in.Avg" = "# of Respondents in Average",
+        "F.GRAD.Program.Level.Avg" = "GRAD Average",
+        "F.UNDG.Program.Level.Avg"= "UNDG Average",
+        "F.GRAD.Program.Respondents.in.Avg" = "# of GRAD Respondents in Average",
+        "F.UNDG.Program.Respondents.in.Avg" = "# of UNDG Respondents in Average",
+        "F.Overall.Count" = "# of Overall Respondents",
+        "F.GRAD.Program.Q.Respondents.in.Avg" = "% of GRAD Total",
+        "F.UNDG.Program.Q.Respondents.in.Avg" = "% of UNDG Total",
+        "X.Degree" = "Degree", 
+        "X.Campus1" = "Campus", 
+        "X.Major" = "Major", 
+        "X.Dept" = "Department", 
+        "X.School" = "College/School")
