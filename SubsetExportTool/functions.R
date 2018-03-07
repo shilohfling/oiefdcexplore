@@ -148,17 +148,25 @@ Table6 <- function(x, questions, qindex, cnames) {
                 return("Selected sample is less than 10. Please select more data.")
         }
         
-        x <- x %>% levelQuestionAvgFreq(questions) %>% 
-              add_count(Q) %>% 
-              rename(F.Respondents.in.Avg = n) %>%
-              rename(F.UNDG.Avg = F.Program.Level.Avg) %>% 
-              group_by(Q, X.Program.Level, F.UNDG.Avg, F.Respondents.in.Avg) %>% 
-              summarise() %>% ungroup() %>% 
-              select(-X.Program.Level) %>% 
-              renameColumns(cnames)
-        
-        AddQtext(x, qindex)
-        
+        if(!"UNDG" %in% unique(x$X.Program.Level)) {
+                
+                return("This item applies to undergradutes only, please select undergraduate data.")
+                
+        } else {
+                
+                x <- x %>% levelQuestionAvgFreq(questions) %>% 
+                      add_count(Q) %>% 
+                      rename(F.Respondents.in.Avg = n) %>%
+                      rename(F.UNDG.Avg = F.Program.Level.Avg) %>% 
+                      group_by(Q, X.Program.Level, F.UNDG.Avg, F.Respondents.in.Avg) %>% 
+                      summarise() %>% ungroup() %>% 
+                      select(-X.Program.Level) %>% 
+                      renameColumns(cnames)
+                
+                x <- AddQtext(x, qindex)
+                
+                return(x)
+        }
 }
 
 Table7 <- function(x, questions, qindex, cnames) {
@@ -190,6 +198,5 @@ Table7 <- function(x, questions, qindex, cnames) {
               renameColumns(cnames)
         
         AddQtext(z, qindex)
-        
 }
 
