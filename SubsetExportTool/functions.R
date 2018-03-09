@@ -217,3 +217,4 @@ Table6 <- function(x, questions, qindex, cnames) {
         }
 }
 
+
