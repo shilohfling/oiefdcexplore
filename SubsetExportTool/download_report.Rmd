@@ -97,8 +97,6 @@ TableA(datasetInput(), paste0("Q", 71:73), questionsIndex, cnm) %>%
 
 ```{r echo=FALSE}
 cap <- "Learning Environment"
-# cols <- c("In my program of study:", 
-#           "Overall Avg.", "GRAD Avg.", "UNGD Avg.")
 foot <- "Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"
 
 TableA(datasetInput(), paste0("Q", 43:48), questionsIndex, cnm) %>%
@@ -133,7 +131,7 @@ Table6(datasetInput(), paste0("Q", 74:82), questionsIndex, cnm) %>%
 cap <- "Learning Environment"
 foot <- "Very Satisfied (4); Mostly Satisfied (3); Mostly Dissatisfied (2); Very Dissatisfied (1)"
 
-Table7(datasetInput(), paste0("Q", 33:42), questionsIndex, cnm) %>%
+TableC(datasetInput(), paste0("Q", 33:42), questionsIndex, cnm) %>%
       kable(digits = 2,
             caption = cap,
             booktabs = TRUE) %>%
@@ -160,7 +158,7 @@ TableB(datasetInput(), paste0("Q", 19), questionsIndex, cnm) %>%
 ```{r echo=FALSE}
 cap <- "Career Outcomes - Employment"
 foot1 <- "Strongly Agree (4); Mostly Agree (3); Mostly Disagree (2); Strongly Disagree (1)"
-foot2 <- "Averages based on responses where employed full- or part-time was primary activity."
+foot2 <- "Averages are based on responses where employed full- or part-time was primary activity."
 
 TableA(datasetInput(), paste0("Q", 108:109), questionsIndex, cnm) %>%
       kable(digits = 2,
@@ -179,8 +177,72 @@ TableA(datasetInput(), paste0("Q", 108:109), questionsIndex, cnm) %>%
 
 ```{r echo=FALSE}
 cap <- "Career Outcomes - Employment"
+foot <- "Percentages are based on responses where employed full- or part-time was primary activity."
 
 TableB(datasetInput(), paste0("Q", 111), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+            general_title = "Note:",
+            footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Employment"
+foot <- "Percentages are based on responses where employed full- or part-time was primary activity."
+
+TableB(datasetInput(), paste0("Q", 115), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+            general_title = "Note:",
+            footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Employment"
+foot <- "Averages are based on responses where employed full- or part-time was primary activity."
+
+TableC(datasetInput(), paste0("Q", 118), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>% 
+      footnote(foot,
+               general_title = "Note:",
+               footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Student/ Continuing Education"
+foot <- "Percentages are based on respondents who indicated student/ continuing education as their primary activity."
+
+TableB(datasetInput(), paste0("Q", 132), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+               general_title = "Note:",
+               footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Student/ Continuing Education"
+
+TableB(datasetInput(), paste0("Q", 138), questionsIndex, cnm) %>%
       kable(digits = 2,
             caption = cap,
             booktabs = TRUE) %>%
@@ -190,13 +252,90 @@ TableB(datasetInput(), paste0("Q", 111), questionsIndex, cnm) %>%
 ```
 
 ```{r echo=FALSE}
-cap <- "Career Outcomes - Employment"
+cap <- "Career Outcomes - Student/ Continuing Education"
+foot <- "Percentages are based on respondents who indicated student/ continuing education as their primary activity."
 
-TableB(datasetInput(), paste0("Q", 115), questionsIndex, cnm) %>%
+TableB(datasetInput(), paste0("Q", 136), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+               general_title = "Note:",
+               footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Military Service"
+
+TableB(datasetInput(), paste0("Q", 148), questionsIndex, cnm) %>%
       kable(digits = 2,
             caption = cap,
             booktabs = TRUE) %>%
       kable_styling(latex_options = "striped", full_width = TRUE) %>%
       row_spec(0, bold = TRUE) %>%
       column_spec(1, "10em")
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Military Service"
+foot <- "Percentages are based on respondents who indicated tehy were serving or had served in the US Military."
+
+TableB(datasetInput(), paste0("Q", 149), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+               general_title = "Note:",
+               footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Military Service"
+foot <- "Percentages are based on respondents who indicated tehy were serving or had served in the US Military."
+
+TableB(datasetInput(), paste0("Q", 151), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em")
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Military Service"
+foot <- "Percentages are based on respondents who indicated tehy were serving or had served in the US Military."
+
+TableB(datasetInput(), paste0("Q", 152), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+               general_title = "Note:",
+               footnote_as_chunk = TRUE)
+```
+
+```{r echo=FALSE}
+cap <- "Career Outcomes - Military Service"
+foot <- "Averages are based on respondents who indicated tehy were serving or had served in the US Military."
+
+TableC(datasetInput(), paste0("Q", 155), questionsIndex, cnm) %>%
+      kable(digits = 2,
+            caption = cap,
+            booktabs = TRUE) %>%
+      kable_styling(latex_options = "striped", full_width = TRUE) %>%
+      row_spec(0, bold = TRUE) %>%
+      column_spec(1, "10em") %>%
+      footnote(foot,
+               general_title = "Note:",
+               footnote_as_chunk = TRUE)
 ```

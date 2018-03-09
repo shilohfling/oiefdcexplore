@@ -25,10 +25,10 @@ source("loadData.R")
 
 ##################################################
 ##Create subset choice vectors
+school_choices <- unique(sort(data$X.School))
 campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")
 dept_choices <- unique(sort(data$X.Dept))
 major_choices <- unique(sort(data$X.Major))
-school_choices <- unique(sort(data$X.School))
 
 ##Make a named list of questions
 question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
@@ -69,11 +69,12 @@ shinyServer(function(input, output, session) {
                 DTX
         })
         
+        
         output$mainbody <- renderUI({
                 fluidPage(
                         ## Custom Webster branded theme
                         theme = "mystyle.css",
-                        img(src="DSC-1256.jpg", alt = "Webster Hall by Inocencio Boc"),
+                        img(src="1711-campus-fall-88.jpg", alt = "Webster Hall Copyrighted Image"),
                         br(), br(),
                         titlePanel("Outcomes Subset Export Tool"),
                         br(), br(),
@@ -192,8 +193,42 @@ shinyServer(function(input, output, session) {
                     br(), br(),
                     h5("Table 11."), br(), tableOutput("table11"), br(),
                     h6("Note: Percentages are based on respondents who indicated they were employed full- or part-time as their primary activity."),
-                    hr()
+                    br(), br(),
+                    h5("Table 12."), br(), tableOutput("table12"), br(),
+                    h6("Note: Averages are based on respondents who indicated they were employed full- or part-time as their primary activity."),
+                    hr(),
                     ## End of Career Outcomes - Employment Section
+                    
+                    ## Start of Career Outcomes - Student/ Continuing Education Section ##
+                    h4("Career Outcomes - Student/ Continuing Education"), br(),
+                    h5("Table 13."), br(), tableOutput("table13"), br(),
+                    h6("Note: Percentages are based on respondents who indicated student/ continuing education as their primary activity."),
+                    br(), br(),
+                    h5("Table 14."), br(), tableOutput("table14"), br(),
+                    h6("Note: Percentages are based on respondents who indicated student/ continuing education as their primary activity."),
+                    br(), br(),
+                    h5("Table 15."), br(), tableOutput("table15"), br(),
+                    h6("Note: Percentages are based on respondents who indicated student/ continuing education as their primary activity."),
+                    hr(),
+                    ## End of Career Outcomes - Student/ Continuing Education Section ##
+                    
+                    ## Start of Career Outcomes - Military Service ##
+                    h4("Career Outcomes - Military Service"), br(),
+                    h5("Table 16."), br(), tableOutput("table16"), br(),
+                    h5("Table 17."), br(), tableOutput("table17"), br(),
+                    h6("Note: Percentages are based on respondents who indicated they were serving or had served in the US military."),
+                    br(), br(),
+                    h5("Table 18."), br(), tableOutput("table18"), br(),
+                    h6("Note: Percentages are based on respondents who indicated they were serving or had served in the US military."),
+                    br(), br(),
+                    h5("Table 19."), br(), tableOutput("table19"), br(),
+                    h6("Note: Percentages are based on respondents who indicated they were serving or had served in the US military."),
+                    br(), br(),
+                    h5("Table 20."), br(), tableOutput("table20"), br(),
+                    h6("Note: Averages are based on respondents who indicated they were serving or had served in the US military."),
+                    br(), br(),
+                    hr()
+                    ## End of Career Outcomes - Military Service ##
                     )
         })
         
@@ -229,7 +264,7 @@ shinyServer(function(input, output, session) {
         })
         
         output$table7 <- renderTable({
-                Table7(datasetInput(), paste0("Q", 33:42), questionsIndex, cnm)
+                TableC(datasetInput(), paste0("Q", 33:42), questionsIndex, cnm)
         })
 
         output$table8 <- renderTable({
@@ -246,6 +281,42 @@ shinyServer(function(input, output, session) {
         
         output$table11 <- renderTable({
                 TableB(datasetInput(), paste0("Q", 115), questionsIndex, cnm)
+        })
+        
+        output$table12 <- renderTable({
+                TableC(datasetInput(), paste0("Q", 118), questionsIndex, cnm)
+        })
+        
+        output$table13 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 132), questionsIndex, cnm)
+        })
+        
+        output$table14 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 138), questionsIndex, cnm)
+        })
+        
+        output$table15 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 136), questionsIndex, cnm)
+        })
+        
+        output$table16 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 148), questionsIndex, cnm)
+        })
+        
+        output$table17 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 149), questionsIndex, cnm)
+        })
+        
+        output$table18 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 151), questionsIndex, cnm)
+        })
+        
+        output$table19 <- renderTable({
+                TableB(datasetInput(), paste0("Q", 152), questionsIndex, cnm)
+        })
+        
+        output$table20 <- renderTable({
+                TableC(datasetInput(), paste0("Q", 155), questionsIndex, cnm)
         })
         
         ##### Download options #####

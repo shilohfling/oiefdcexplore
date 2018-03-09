@@ -76,7 +76,9 @@ TableA <- function(x, questions, qindex, cnames) {
               spread(X.Program.Level, F.Program.Level.Avg) %>% 
               renameColumns(cnames)
         
-        AddQtext(x, qindex)
+        x <- AddQtext(x, qindex)
+        
+        return(x)
 }
 
 TableB <- function(x, question, qindex, cnames) {
@@ -96,16 +98,20 @@ TableB <- function(x, question, qindex, cnames) {
               rename(F.Responses.Question.Program = n) %>% 
               add_count(X.Program.Level) %>%
               rename(F.Responses.Program = n) %>%
-              mutate(F.Overall.Avg = (F.Responses.Question/F.Overall.Count) * 100) %>% 
+              mutate(F.Overall.Total.Percent = (F.Responses.Question/F.Overall.Count) * 100) %>% 
               mutate(F.Program.Avg = (F.Responses.Question.Program/F.Responses.Program) * 100) %>% 
-              group_by(V, X.Program.Level, F.Overall.Count, F.Overall.Avg, 
+              group_by(V, X.Program.Level, F.Overall.Count, F.Overall.Total.Percent, 
                        F.Responses.Question.Program, F.Program.Avg) %>% 
               summarise() %>% ungroup
         
+        if(nrow(x) < 1) {
+                return("No responses for this item.")
+        }
+        
          y <- x %>% select(-F.Responses.Question.Program) %>% 
                spread(X.Program.Level, F.Program.Avg) %>%
-               renameColumns(c("GRAD" = "F.GRAD.Program.Level.Avg",
-                               "UNDG" = "F.UNDG.Program.Level.Avg"))
+               renameColumns(c("GRAD" = "F.GRAD.Program.Level.Percent",
+                               "UNDG" = "F.UNDG.Program.Level.Percent"))
                #rename(F.GRAD.Program.Level.Avg = GRAD) %>% 
                #rename(F.UNDG.Program.Level.Avg = UNDG)
         
@@ -115,10 +121,49 @@ TableB <- function(x, question, qindex, cnames) {
                                "UNDG" = "F.UNDG.Program.Q.Respondents.in.Avg")) %>% 
                #rename(F.GRAD.Program.Q.Respondents.in.Avg = GRAD) %>% 
                #rename(F.UNDG.Program.Q.Respondents.in.Avg = UNDG) %>% 
-               left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Avg")) %>% 
+               left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Total.Percent")) %>% 
                renameColumns(cnames)
         
-        AddHeader(z, question, qindex)
+        x <- AddHeader(z, question, qindex)
+        
+        return(x)
+}
+
+TableC <- function(x, questions, qindex, cnames) {
+        
+        if(nrow(x) < 10) {
+                return("Selected sample is less than 10. Please select more data.")
+        }
+        
+        x <- x %>% levelQuestionAvgFreq(questions) %>%
+              add_count(Q) %>%
+              rename(F.Respondents.in.Avg = n) %>%
+              group_by(Q, X.Program.Level) %>% 
+              add_count(Q) %>%
+              rename(F.Program.Respondents.in.Avg = n) %>%
+              group_by(Q, F.Overall.Avg, F.Respondents.in.Avg, X.Program.Level, 
+                       F.Program.Level.Avg, F.Program.Respondents.in.Avg) %>%
+              summarise() %>% ungroup() 
+        
+        if(nrow(x) < 1) {
+                return("No responses for this item.")
+        }
+        
+        y <- x %>% select(-F.Program.Level.Avg) %>% 
+              spread(X.Program.Level, F.Program.Respondents.in.Avg) %>% 
+              renameColumns(c("GRAD" = "F.GRAD.Program.Respondents.in.Avg",
+                              "UNDG" = "F.UNDG.Program.Respondents.in.Avg"))
+        
+        z <- x %>% select(-F.Program.Respondents.in.Avg) %>% 
+              spread(X.Program.Level, F.Program.Level.Avg) %>%
+              renameColumns(c("GRAD" = "F.GRAD.Program.Level.Avg",
+                              "UNDG" = "F.UNDG.Program.Level.Avg")) %>% 
+              left_join(y, by = c("Q", "F.Overall.Avg", "F.Respondents.in.Avg")) %>% 
+              renameColumns(cnames)
+        
+        x <- AddQtext(z, qindex)
+        
+        return(x)
 }
 
 ##### Customized tables for reporting tables that don't fit into TableA or TableB #####
@@ -129,7 +174,7 @@ Table1 <- function(x, cnames) {
         }
         
         ##Response Rates
-        x %>% add_count(X.Program.Level, X.Data.Set) %>%
+        x <- x %>% add_count(X.Program.Level, X.Data.Set) %>%
               rename(F.Total.Respondents = n) %>%
               add_count(X.Program.Level) %>%
               rename(F.Total.Graduates = n) %>%
@@ -140,6 +185,9 @@ Table1 <- function(x, cnames) {
               filter(X.Data.Set == "Responder")  %>%
               select(-X.Data.Set) %>% 
               renameColumns(cnames)
+        
+        return(x)
+        
 }
 
 Table6 <- function(x, questions, qindex, cnames) {
@@ -150,7 +198,7 @@ Table6 <- function(x, questions, qindex, cnames) {
         
         if(!"UNDG" %in% unique(x$X.Program.Level)) {
                 
-                return("This item applies to undergradutes only, please select undergraduate data.")
+                return("This question applies to undergradutes only.")
                 
         } else {
                 
@@ -167,36 +215,5 @@ Table6 <- function(x, questions, qindex, cnames) {
                 
                 return(x)
         }
-}
-
-Table7 <- function(x, questions, qindex, cnames) {
-        
-        if(nrow(x) < 10) {
-                return("Selected sample is less than 10. Please select more data.")
-        }
-        
-        x <- x %>% levelQuestionAvgFreq(questions) %>%
-              add_count(Q) %>%
-              rename(F.Respondents.in.Avg = n) %>%
-              group_by(Q, X.Program.Level) %>% 
-              add_count(Q) %>%
-              rename(F.Program.Respondents.in.Avg = n) %>%
-              group_by(Q, F.Overall.Avg, F.Respondents.in.Avg, X.Program.Level, 
-                       F.Program.Level.Avg, F.Program.Respondents.in.Avg) %>%
-              summarise() %>% ungroup() 
-        
-        y <- x %>% select(-F.Program.Level.Avg) %>% 
-              spread(X.Program.Level, F.Program.Respondents.in.Avg) %>% 
-              renameColumns(c("GRAD" = "F.GRAD.Program.Respondents.in.Avg",
-                              "UNDG" = "F.UNDG.Program.Respondents.in.Avg"))
-        
-        z <- x %>% select(-F.Program.Respondents.in.Avg) %>% 
-              spread(X.Program.Level, F.Program.Level.Avg) %>%
-              renameColumns(c("GRAD" = "F.GRAD.Program.Level.Avg",
-                              "UNDG" = "F.UNDG.Program.Level.Avg")) %>% 
-              left_join(y, by = c("Q", "F.Overall.Avg", "F.Respondents.in.Avg")) %>% 
-              renameColumns(cnames)
-        
-        AddQtext(z, qindex)
 }
 
