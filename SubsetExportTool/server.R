@@ -69,6 +69,9 @@ shinyServer(function(input, output, session) {
                 DTX
         })
         
+        # observeEvent(input$downloadReport, {
+        #         print(paste("Your report is downloading. Please wait."))
+        # }, once = TRUE)
         
         output$mainbody <- renderUI({
                 fluidPage(
@@ -76,7 +79,7 @@ shinyServer(function(input, output, session) {
                         theme = "mystyle.css",
                         img(src="1711-campus-fall-88.jpg", alt = "Webster Hall Copyrighted Image"),
                         br(), br(),
-                        titlePanel("Outcomes Subset Export Tool"),
+                        titlePanel("Subset Export Tool"),
                         br(), br(),
                         
                         sidebarLayout(
@@ -110,10 +113,10 @@ shinyServer(function(input, output, session) {
                                 ## View the subsetted options into two tabs - Table and Preview report
                                 tabsetPanel(type = "tabs",
                                             tabPanel("Data table", class = "one",
-                                                     div(HTML("<br><h2><b><center>AY 2016-2017 Responses</center></b></h2></br>")),
+                                                     div(HTML("<br><h2><b><center>Outcomes Survey Responses</center></b></h2></br>")),
                                                      DT::dataTableOutput("table")),
                                             tabPanel("Preview Report", class = "one",
-                                                     div(HTML("<br><h2><b><center>AY 2016-2017 Responses</center></b></h2></br>")),
+                                                     div(HTML("<br><h2><b><center>Outcomes Survey Responses</center></b></h2></br>")),
                                                      uiOutput("report"))
                                             )
                                 )
@@ -321,12 +324,27 @@ shinyServer(function(input, output, session) {
         
         ##### Download options #####
         
+#         output$downloadReport <- withProgress(message = 'Making plot', value = 0, {
+#                 n <- 2
+#                 
+#                 for(i in 1:n) {
+#                         
+#                 downloadHandler(
+#                 filename = "myreportpdf.pdf",
+#                 content = function(file) {
+#                     out <- render("download_report.Rmd", pdf_document())
+#                     file.rename(out, file)
+#                                 }
+#                 )
+#                 }
+#         }
+# )
         output$downloadReport <- downloadHandler(
-              filename = "myreportpdf.pdf",
-              content = function(file) {
-                    out <- render("download_report.Rmd", pdf_document())
-                    file.rename(out, file)
-              }
+                filename = "myreportpdf.pdf",
+                content = function(file) {
+                        out <- render("download_report.Rmd", pdf_document())
+                        file.rename(out, file)
+                }
         )
         
         output$downloadData <- downloadHandler(
