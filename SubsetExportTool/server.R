@@ -25,6 +25,7 @@ source("loadData.R")
 
 ##################################################
 ##Create subset choice vectors
+ay_choices <- unique(sort(data$AY))
 school_choices <- unique(sort(data$X.School))
 campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")
 dept_choices <- unique(sort(data$X.Dept))
@@ -53,6 +54,10 @@ shinyServer(function(input, output, session) {
                 }
                 
                 DTX <- DTX[DTX$X.School %in% input$school, ]
+                
+                if (!is.null(input$ay)){
+                        DTX <- DTX[DTX$AY %in% input$ay, ]
+                }
                 
                 if (!is.null(input$dept)){
                         DTX <- DTX[DTX$X.Dept %in% input$dept, ]
@@ -86,6 +91,9 @@ shinyServer(function(input, output, session) {
                                  sidebarPanel(
                                          h3("Please select data: "),
                                          br(), hr(),
+                                         radioButtons("ay", 
+                                                      label = h5("Academic Year:"),
+                                                      choices = ay_choices),
                                          selectInput(inputId = "school",
                                                      label = h5("School/ College:"),
                                                      choices = school_choices,

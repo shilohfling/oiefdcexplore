@@ -70,7 +70,9 @@ TableA <- function(x, questions, qindex, cnames) {
                 return("Selected sample is less than 10. Please select more data.")
         }
         
-        x <- x %>% levelQuestionAvgFreq(questions) %>% 
+        x <- x %>% 
+              # na.omit() %>% 
+              levelQuestionAvgFreq(questions) %>% 
               group_by(Q, X.Program.Level, F.Overall.Avg, F.Program.Level.Avg) %>% 
               summarise() %>% ungroup() %>% 
               spread(X.Program.Level, F.Program.Level.Avg) %>% 
@@ -87,7 +89,8 @@ TableB <- function(x, question, qindex, cnames) {
                 return("Selected sample is less than 10. Please select more data.")
         }
         
-        x <- x %>% select(question, X.Program.Level) %>%
+        x <- x %>%
+              select(question, X.Program.Level) %>%
               rename_("V" = question) %>%
               na.omit() %>%
               filter(V != "No Response") %>%
