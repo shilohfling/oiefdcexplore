@@ -71,6 +71,8 @@ shinyServer(function(input, output, session) {
                         DTX <- DTX[DTX$X.Campus1 %in% input$campus, ]
                 }
                 
+                testcheck <<- DTX
+                
                 DTX
         })
         
@@ -91,7 +93,7 @@ shinyServer(function(input, output, session) {
                                  sidebarPanel(
                                          h3("Please select data: "),
                                          br(), hr(),
-                                         radioButtons("ay", 
+                                         checkboxGroupInput("ay", 
                                                       label = h5("Academic Year:"),
                                                       choices = ay_choices),
                                          selectInput(inputId = "school",

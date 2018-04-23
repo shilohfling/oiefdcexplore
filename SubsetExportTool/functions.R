@@ -6,18 +6,20 @@
 
 ##### Function to calculate frequency of responses #####
 levelQuestionAvgFreq <- function(x, questions) {
-        x %>% select(X.Program.Level, questions) %>% 
+        x %>% select(X.Program.Level, AY, questions) %>% 
                 gather("Q", "V", starts_with("Q")) %>% 
-                group_by(Q) %>% na.omit() %>% 
+                group_by(Q, AY) %>% na.omit() %>% 
                 mutate(F.Overall.Avg = mean(V)) %>% 
                 ungroup() %>% 
-                group_by(Q, X.Program.Level) %>% 
+                group_by(Q, X.Program.Level) %>%
                 mutate(F.Program.Level.Avg = mean(V)) %>% 
+                ungroup() %>%
+                group_by(Q, AY, X.Program.Level) %>%
+                mutate(F.AY.Program.Level.Avg = mean(V)) %>% 
                 ungroup() 
 }
 
 #### Function to replace Q column with Questions from Question Index
-
 AddQtext <- function(x, qindex, header = TRUE) {
       
       x <- x %>% left_join(questionsIndex, by = c("Q" = "Question"))
@@ -29,7 +31,7 @@ AddQtext <- function(x, qindex, header = TRUE) {
             select(-Q) %>% 
             select(Question, everything())
       
-      if (header == TRUE){      
+      if (header == TRUE) {      
             names(x)[names(x) == "Question"] <- qitem
       }
       
@@ -37,19 +39,17 @@ AddQtext <- function(x, qindex, header = TRUE) {
 }
 
 #### Rename the V column to the question from the Question Index
-AddHeader <- function(x, q, qindex){
+AddHeader <- function(x, q, qindex) {
       names(x)[names(x) == "V"] <- questionsIndex$QB[questionsIndex$Question == q]
       return(x)
 }
 
 ##### Make a DT Preview Frame
-
 PreviewDT <- function(x, cnames) {
       x <- x %>% select(X.Program.Level, X.Degree, X.Campus1, X.Major, X.Dept, X.School) %>% 
             renameColumns(cnames)
       return(x)
 }
-
 
 ##### Rename any/all columns that match the nm vector
 renameColumns <- function(x, nm) {
@@ -59,9 +59,6 @@ renameColumns <- function(x, nm) {
       
       return(x)
 }
-
-
-
 
 ##### General table functions, should be flexible enough to apply to most tables #####
 TableA <- function(x, questions, qindex, cnames) {
@@ -73,9 +70,10 @@ TableA <- function(x, questions, qindex, cnames) {
         x <- x %>% 
               # na.omit() %>% 
               levelQuestionAvgFreq(questions) %>% 
-              group_by(Q, X.Program.Level, F.Overall.Avg, F.Program.Level.Avg) %>% 
+              group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
               summarise() %>% ungroup() %>% 
-              spread(X.Program.Level, F.Program.Level.Avg) %>% 
+              spread(AY, F.AY.Program.Level.Avg) %>% 
+              #spread(X.Program.Level, F.Program.Level.Avg) %>% 
               renameColumns(cnames)
         
         x <- AddQtext(x, qindex)
