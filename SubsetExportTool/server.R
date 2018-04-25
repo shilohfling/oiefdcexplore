@@ -32,6 +32,7 @@ school_choices <- unique(sort(data$X.School))
 campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")
 dept_choices <- unique(sort(data$X.Dept))
 major_choices <- unique(sort(data$X.Major))
+program_choices <- unique(sort(data$X.Program.Level))
 
 ##Make a named list of questions
 question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
@@ -57,15 +58,19 @@ shinyServer(function(input, output, session) {
                 
                 DTX <- DTX[DTX$X.School %in% input$school, ]
                 
-                if (!is.null(input$ay)){
+                if (!is.null(input$ay)) {
                         DTX <- DTX[DTX$AY %in% input$ay, ]
                 }
                 
-                if (!is.null(input$dept)){
+                if (!is.null(input$program)) {
+                        DTX <- DTX[DTX$X.Program.Level %in% input$program, ]
+                }
+                
+                if (!is.null(input$dept)) {
                         DTX <- DTX[DTX$X.Dept %in% input$dept, ]
                 }
                 
-                if (!is.null(input$major)){
+                if (!is.null(input$major)) {
                         DTX <- DTX[DTX$X.Major %in% input$major, ]   
                 }
                 
@@ -98,6 +103,9 @@ shinyServer(function(input, output, session) {
                                          checkboxGroupInput("ay", 
                                                       label = h5("Academic Year:"),
                                                       choices = ay_choices),
+                                         checkboxGroupInput("program", 
+                                                            label = h5("Program Level:"),
+                                                            choices = program_choices),
                                          selectInput(inputId = "school",
                                                      label = h5("School/ College:"),
                                                      choices = school_choices,

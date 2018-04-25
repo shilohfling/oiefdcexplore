@@ -69,7 +69,6 @@ TableA <- function(x, questions, qindex, cnames) {
         }
         
         x <- x %>% 
-              # na.omit() %>% 
               levelQuestionAvgFreq(questions) %>% 
               group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
               summarise() %>% ungroup() %>%
@@ -102,8 +101,13 @@ TableB <- function(x, question, qindex, cnames) {
               rename(F.Responses.Program = n) %>%
               mutate(F.Overall.Total.Percent = (F.Responses.Question/F.Overall.Count) * 100) %>% 
               mutate(F.Program.Avg = (F.Responses.Question.Program/F.Responses.Program) * 100) %>% 
-              group_by(V, X.Program.Level, F.Overall.Count, F.Overall.Total.Percent, 
-                       F.Responses.Question.Program, F.Program.Avg) %>% 
+                # group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
+                # summarise() %>% ungroup() %>%
+                # mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
+                # dcast(Q ~ AY + X.Program.Level) %>% 
+                # renameColumns(cnames)
+              group_by(V, X.Program.Level, F.Overall.Count, F.Overall.Total.Percent,
+                       F.Responses.Question.Program, F.Program.Avg) %>%
               summarise() %>% ungroup
         
         if(nrow(x) < 1) {
@@ -143,9 +147,14 @@ TableC <- function(x, questions, qindex, cnames) {
               group_by(Q, X.Program.Level) %>% 
               add_count(Q) %>%
               rename(F.Program.Respondents.in.Avg = n) %>%
-              group_by(Q, F.Overall.Avg, F.Respondents.in.Avg, X.Program.Level, 
+                # group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
+                # summarise() %>% ungroup() %>%
+                # mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
+                # dcast(Q ~ AY + X.Program.Level) %>% 
+                # renameColumns(cnames)
+              group_by(Q, F.Overall.Avg, F.Respondents.in.Avg, X.Program.Level,
                        F.Program.Level.Avg, F.Program.Respondents.in.Avg) %>%
-              summarise() %>% ungroup() 
+              summarise() %>% ungroup()
         
         if(nrow(x) < 1) {
                 return("No responses for this item.")
@@ -208,10 +217,15 @@ Table6 <- function(x, questions, qindex, cnames) {
                       add_count(Q) %>% 
                       rename(F.Respondents.in.Avg = n) %>%
                       rename(F.UNDG.Avg = F.Program.Level.Avg) %>% 
-                      group_by(Q, X.Program.Level, F.UNDG.Avg, F.Respondents.in.Avg) %>% 
-                      summarise() %>% ungroup() %>% 
-                      select(-X.Program.Level) %>% 
-                      renameColumns(cnames)
+                        group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
+                        summarise() %>% ungroup() %>%
+                        mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
+                        dcast(Q ~ AY + X.Program.Level) %>% 
+                        renameColumns(cnames)
+                      # group_by(Q, X.Program.Level, F.UNDG.Avg, F.Respondents.in.Avg) %>% 
+                      # summarise() %>% ungroup() %>% 
+                      # select(-X.Program.Level) %>% 
+                      # renameColumns(cnames)
                 
                 x <- AddQtext(x, qindex)
                 
