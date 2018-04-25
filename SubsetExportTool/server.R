@@ -16,6 +16,8 @@ library(purrr)
 library(rmarkdown)
 library(tidyr)
 library(openxlsx)
+library(data.table)
+library(magrittr)
 
 ##################################################
 ## Load sources

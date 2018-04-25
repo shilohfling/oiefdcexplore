@@ -56,6 +56,7 @@ renameColumns <- function(x, nm) {
 
       existing <- match(names(nm), names(x))
       names(x)[na.omit(existing)] <- nm[which(!is.na(existing))]
+      colnames(x) %<>% gsub("_", " ", .)
       
       return(x)
 }
@@ -71,10 +72,10 @@ TableA <- function(x, questions, qindex, cnames) {
               # na.omit() %>% 
               levelQuestionAvgFreq(questions) %>% 
               group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
-              summarise() %>% ungroup() #%>% 
-              #spread(AY, F.AY.Program.Level.Avg) %>% 
-              #spread(X.Program.Level, F.Program.Level.Avg) %>% 
-              #renameColumns(cnames)
+              summarise() %>% ungroup() %>%
+              mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
+              dcast(Q ~ AY + X.Program.Level) %>% 
+              renameColumns(cnames)
         
         x <- AddQtext(x, qindex)
         
