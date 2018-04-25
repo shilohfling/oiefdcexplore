@@ -71,10 +71,10 @@ TableA <- function(x, questions, qindex, cnames) {
               # na.omit() %>% 
               levelQuestionAvgFreq(questions) %>% 
               group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
-              summarise() %>% ungroup() %>% 
-              spread(AY, F.AY.Program.Level.Avg) %>% 
+              summarise() %>% ungroup() #%>% 
+              #spread(AY, F.AY.Program.Level.Avg) %>% 
               #spread(X.Program.Level, F.Program.Level.Avg) %>% 
-              renameColumns(cnames)
+              #renameColumns(cnames)
         
         x <- AddQtext(x, qindex)
         
