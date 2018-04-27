@@ -86,9 +86,11 @@ TableB <- function(x, question, qindex, cnames) {
         if(nrow(x) < 10) {
                 return("Selected sample is less than 10. Please select more data.")
         }
-        
-        x <- x %>%
-              select(question, X.Program.Level) %>%
+        #question <- paste0("Q", 148)
+        #qindex <- questionsIndex
+        #cnames <- cnm
+        x <<- data %>%
+              select(question, AY, X.Program.Level) %>%
               rename_("V" = question) %>%
               na.omit() %>%
               filter(V != "No Response") %>%
@@ -100,15 +102,13 @@ TableB <- function(x, question, qindex, cnames) {
               add_count(X.Program.Level) %>%
               rename(F.Responses.Program = n) %>%
               mutate(F.Overall.Total.Percent = (F.Responses.Question/F.Overall.Count) * 100) %>% 
-              mutate(F.Program.Avg = (F.Responses.Question.Program/F.Responses.Program) * 100) %>% 
-                # group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
-                # summarise() %>% ungroup() %>%
-                # mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
-                # dcast(Q ~ AY + X.Program.Level) %>% 
-                # renameColumns(cnames)
-              group_by(V, X.Program.Level, F.Overall.Count, F.Overall.Total.Percent,
+              mutate(F.Program.Avg = (F.Responses.Question.Program/F.Responses.Program) * 100) %>%
+              group_by(V, AY, X.Program.Level, F.Overall.Count, F.Overall.Total.Percent,
                        F.Responses.Question.Program, F.Program.Avg) %>%
-              summarise() %>% ungroup
+              summarise() %>% ungroup() %>%
+              # mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
+              # dcast(V ~ AY + X.Program.Level) %>% 
+              renameColumns(cnames)
         
         if(nrow(x) < 1) {
                 return("No responses for this item.")
@@ -118,15 +118,11 @@ TableB <- function(x, question, qindex, cnames) {
                spread(X.Program.Level, F.Program.Avg) %>%
                renameColumns(c("GRAD" = "F.GRAD.Program.Level.Percent",
                                "UNDG" = "F.UNDG.Program.Level.Percent"))
-               #rename(F.GRAD.Program.Level.Avg = GRAD) %>% 
-               #rename(F.UNDG.Program.Level.Avg = UNDG)
-        
+               
          z <- x %>% select(-F.Program.Avg) %>% 
                spread(X.Program.Level, F.Responses.Question.Program) %>% 
                renameColumns(c("GRAD" = "F.GRAD.Program.Q.Respondents.in.Avg",
                                "UNDG" = "F.UNDG.Program.Q.Respondents.in.Avg")) %>% 
-               #rename(F.GRAD.Program.Q.Respondents.in.Avg = GRAD) %>% 
-               #rename(F.UNDG.Program.Q.Respondents.in.Avg = UNDG) %>% 
                left_join(y, by = c("V", "F.Overall.Count", "F.Overall.Total.Percent")) %>% 
                renameColumns(cnames)
         
@@ -151,10 +147,10 @@ TableC <- function(x, questions, qindex, cnames) {
                 # summarise() %>% ungroup() %>%
                 # mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
                 # dcast(Q ~ AY + X.Program.Level) %>% 
-                # renameColumns(cnames)
               group_by(Q, F.Overall.Avg, F.Respondents.in.Avg, X.Program.Level,
                        F.Program.Level.Avg, F.Program.Respondents.in.Avg) %>%
-              summarise() %>% ungroup()
+              summarise() %>% ungroup() %>%
+              renameColumns(cnames)
         
         if(nrow(x) < 1) {
                 return("No responses for this item.")
@@ -217,15 +213,11 @@ Table6 <- function(x, questions, qindex, cnames) {
                       add_count(Q) %>% 
                       rename(F.Respondents.in.Avg = n) %>%
                       rename(F.UNDG.Avg = F.Program.Level.Avg) %>% 
-                        group_by(Q, AY, X.Program.Level, F.Overall.Avg, F.AY.Program.Level.Avg) %>% #rem: F.Program.Level.Avg
-                        summarise() %>% ungroup() %>%
-                        mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
-                        dcast(Q ~ AY + X.Program.Level) %>% 
-                        renameColumns(cnames)
-                      # group_by(Q, X.Program.Level, F.UNDG.Avg, F.Respondents.in.Avg) %>% 
-                      # summarise() %>% ungroup() %>% 
-                      # select(-X.Program.Level) %>% 
-                      # renameColumns(cnames)
+                      group_by(Q, AY, X.Program.Level, F.UNDG.Avg, F.AY.Program.Level.Avg) %>% 
+                      summarise() %>% ungroup() %>%
+                      mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
+                      dcast(Q ~ AY + X.Program.Level) %>% 
+                      renameColumns(cnames)
                 
                 x <- AddQtext(x, qindex)
                 

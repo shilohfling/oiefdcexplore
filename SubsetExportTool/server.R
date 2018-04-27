@@ -11,13 +11,12 @@ library(DT)
 library(ggplot2)
 library(dplyr)
 library(purrr)
-#library(sjPlot)
-#library(sjmisc)
 library(rmarkdown)
 library(tidyr)
 library(openxlsx)
 library(data.table)
 library(magrittr)
+library(reshape2)
 
 ##################################################
 ## Load sources
