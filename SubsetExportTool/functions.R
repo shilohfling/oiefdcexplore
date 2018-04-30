@@ -89,25 +89,43 @@ TableB <- function(x, question, qindex, cnames) {
         #question <- paste0("Q", 148)
         #qindex <- questionsIndex
         #cnames <- cnm
-        x <<- data %>%
+        
+        # checkdata <<- x
+        # 
+        question <- paste0("Q", 19)
+        # cnames <- cnm
+        # 
+        x <- testcheck %>%
               select(question, AY, X.Program.Level) %>%
               rename_("V" = question) %>%
               na.omit() %>%
               filter(V != "No Response") %>%
-              mutate(F.Overall.Count = nrow(.)) %>% 
-              add_count(V) %>%
+              add_count(AY) %>%
+              rename(F.Overall.Count = n) %>% 
+              add_count(AY, V) %>%
               rename(F.Responses.Question = n) %>% 
-              add_count(V, X.Program.Level) %>%
+              add_count(AY, V, X.Program.Level) %>%
               rename(F.Responses.Question.Program = n) %>% 
-              add_count(X.Program.Level) %>%
+              add_count(AY, X.Program.Level) %>%
               rename(F.Responses.Program = n) %>%
               mutate(F.Overall.Total.Percent = (F.Responses.Question/F.Overall.Count) * 100) %>% 
               mutate(F.Program.Avg = (F.Responses.Question.Program/F.Responses.Program) * 100) %>%
               group_by(V, AY, X.Program.Level, F.Overall.Count, F.Overall.Total.Percent,
                        F.Responses.Question.Program, F.Program.Avg) %>%
               summarise() %>% ungroup() %>%
-              # mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY)) %>% 
-              # dcast(V ~ AY + X.Program.Level) %>% 
+              select(-F.Overall.Count) %>% 
+              select(-F.Overall.Total.Percent) %>%
+              mutate(AY = gsub("(\\d{2})(\\d{2})", "\\1-\\2", AY))# %>%
+              dcast(V ~ AY + X.Program.Level)
+                
+        #spread(AY, X.Program.Level)
+                
+        y <- left_join(
+                dcast(x, V ~ AY + X.Program.Level, value.var = "F.Responses.Question.Program"),
+                dcast(x, V ~ AY + X.Program.Level, value.var = "F.Program.Avg"), by = "V"
+        )
+                
+                #%>% 
               renameColumns(cnames)
         
         if(nrow(x) < 1) {
