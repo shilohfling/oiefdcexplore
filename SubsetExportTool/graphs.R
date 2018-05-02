@@ -16,4 +16,7 @@ library(ggradar)
 # https://medium.com/@rhdzmota/alcohol-and-radar-plots-in-r-with-ggplot2-9ba7ad8c92c
 # http://pcwww.liv.ac.uk/~william/Geodemographic%20Classifiability/func%20CreateRadialPlot.r
 
+## Accessibility - Notes
+# https://medium.com/square-corner-blog/accessible-colors-for-data-visualization-2ad64ac4ee7e
+
 ## Need to scale the data before we can use ggradar()
