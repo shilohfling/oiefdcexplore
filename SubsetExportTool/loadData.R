@@ -7,6 +7,7 @@
 ##Load the data object from disk
 data <- readRDS("sources/data.RDS")
 
+##Create a column for Academic Year
 data$AY <- as.character(data$AY)
 
 ##Set the column names from the index file
@@ -15,7 +16,7 @@ colnames(data) <- questionsIndex$Question
 ##Set column types, tidy, etc
 #data$X.Program.Level <- as.factor(data$X.Program.Level)
 
-##Create misc. objects
+##Recode column names to make the app more presentable
 cnm <- c("AY" = "Academic Year",
         "X.Program.Level" = "Program Level",
         "F.Total.Graduates" = "Total Graduates",
