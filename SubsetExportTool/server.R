@@ -26,12 +26,12 @@ source("loadData.R")
 
 ##################################################
 ##Create subset choice vectors
-ay_choices <- unique(sort(data$AY))
-school_choices <- unique(sort(data$X.School))
-campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")
-dept_choices <- unique(sort(data$X.Dept))
-major_choices <- unique(sort(data$X.Major))
-program_choices <- unique(sort(data$X.Program.Level))
+ay_choices <- unique(sort(data$AY))                                     ## Academic Year
+school_choices <- unique(sort(data$X.School))                           ## School or College
+campus_choices <- c(unique(sort(data$X.Campus1)), "Select All")         ## Campus
+dept_choices <- unique(sort(data$X.Dept))                               ## Department
+major_choices <- unique(sort(data$X.Major))                             ## Major
+program_choices <- unique(sort(data$X.Program.Level))                   ## GRAD or UNDG
 
 ##Make a named list of questions
 question_choices <- questionsIndex %>% split(questionsIndex$Category) %>%
@@ -49,57 +49,70 @@ shinyServer(function(input, output, session) {
         datasetInput <- reactive({
                 DTX <- data
                 
-                ##Subsetting
+                ## Subsetting based on options clicked in application
+                ## By Campus Choices
                 if("Select All" %in% input$campus) {
                       selected_campus_choices <- setdiff(campus_choices, "Select All")
                       updateSelectInput(session, "campus", selected = selected_campus_choices)
                 }
                 
+                ## By School or College
                 DTX <- DTX[DTX$X.School %in% input$school, ]
                 
+                ## By Academic Year
                 if (!is.null(input$ay)) {
                         DTX <- DTX[DTX$AY %in% input$ay, ]
                 }
                 
+                ## By GRAD and/or UNDG
                 if (!is.null(input$program)) {
                         DTX <- DTX[DTX$X.Program.Level %in% input$program, ]
                 }
                 
+                ## By Department
                 if (!is.null(input$dept)) {
                         DTX <- DTX[DTX$X.Dept %in% input$dept, ]
                 }
                 
+                ## By Major
                 if (!is.null(input$major)) {
                         DTX <- DTX[DTX$X.Major %in% input$major, ]   
                 }
                 
+                ## By Campus
                 if (!is.null(input$campus)){
                         DTX <- DTX[DTX$X.Campus1 %in% input$campus, ]
                 }
                 
-                testcheck <<- DTX
+                testcheck <<- DTX       ## Test to see if data is being subsetted correctly
+                                        ## Stores additional copy of data set
                 
-                DTX
+                DTX                     ## Output subsetted data table
         })
         
         # observeEvent(input$downloadReport, {
         #         print(paste("Your report is downloading. Please wait."))
         # }, once = TRUE)
         
+        ## Beginning of main body
         output$mainbody <- renderUI({
+                ## Beginning of fluid page
                 fluidPage(
                         ## Custom Webster branded theme
                         theme = "mystyle.css",
+                        ## Header for app
                         img(src="1711-campus-fall-88.jpg", alt = "Webster Hall Copyrighted Image"),
                         br(), br(),
                         titlePanel("Subset Export Tool"),
                         br(), br(),
                         
+                        ## Start of design for sidebar and subsetting options 
                         sidebarLayout(
                                  sidebarPanel(
                                          h3("Please select data: "),
                                          br(), hr(),
-                                         checkboxGroupInput("ay", 
+                                         ## Subsetting options 
+                                         checkboxGroupInput("ay",
                                                       label = h5("Academic Year:"),
                                                       choices = ay_choices),
                                          checkboxGroupInput("program", 
@@ -122,33 +135,41 @@ shinyServer(function(input, output, session) {
                                                      choices = campus_choices,
                                                      multiple = TRUE),
                                          hr(),
+                                         ## Download options for subsetted data
                                          downloadButton("downloadData", h5("Download Data")),
                                          downloadButton("downloadReport", h5("Download Report")),
                                          br(), br(),
+                                         ## Webster University branding on sidebar, underneath download options
                                          img(src="401px-Webster_University_Logo.svg.png", alt = "Webster University Logo")
-                                 ),
+                                ), 
+                                ## End of side bar
                                  
+                                ## Beginning of main area where data table and report are rendered 
                                 mainPanel(
                                 ## View the subsetted options into two tabs - Table and Preview report
                                 tabsetPanel(type = "tabs",
+                                            ## Table
                                             tabPanel("Data table", class = "one",
                                                      div(HTML("<br><h2><b><center>Outcomes Survey Responses</center></b></h2></br>")),
                                                      DT::dataTableOutput("table")),
+                                            ## Report preview
                                             tabPanel("Preview Report", class = "one",
                                                      div(HTML("<br><h2><b><center>Outcomes Survey Responses</center></b></h2></br>")),
                                                      uiOutput("report"))
-                                            )
-                                )
-                         )
-                )
-        })
+                                            ) ## End of Tabset Panel
+                                ) ## End of Main panel
+                         ) ## End of Sidebar Layout
+                ) ## End of Fluid Page
+        }) ## End of Main body
         
         ##### Design for first tab (the data table) #####
         output$table <- DT::renderDataTable({
                 DTpreview <- PreviewDT(datasetInput(), cnm)
-                
                 DT::datatable(DTpreview, select = "none",
-                              options = list(lengthMenu = c(5, 10, 25, 50, 100), pageLength = 5),
+                              options = list(lengthMenu = c(5, 10, 25, 50, 100), 
+                                                ## lengthMenu is used for selecting the amount of rows of data to show
+                                             pageLength = 5),
+                                                 ## pageLength is the default length, currently 5
                               rownames = FALSE)
         })
         
@@ -260,7 +281,7 @@ shinyServer(function(input, output, session) {
               }
         })
         
-        ##### Table designs #####
+        ##### Table designs for each question #####
         output$table1 <- renderTable({
                 Table1(datasetInput(), cnm)
         })
@@ -358,6 +379,7 @@ shinyServer(function(input, output, session) {
 #                 }
 #         }
 # )
+        ## Download report as PDF (rmarkdown)
         output$downloadReport <- downloadHandler(
                 filename = "myreportpdf.pdf",
                 content = function(file) {
@@ -366,6 +388,7 @@ shinyServer(function(input, output, session) {
                 }
         )
         
+        ## Download raw, subsetted data as a .csv
         output$downloadData <- downloadHandler(
                 filename = "mydownload.csv",
                 content = function(file) {
